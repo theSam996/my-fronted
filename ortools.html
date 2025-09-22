@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>College Timetable Scheduler</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    button { padding: 10px 15px; cursor: pointer; }
+    #events { white-space: pre-wrap; background-color: #f4f4f4; padding: 15px; border: 1px solid #ccc; }
+  </style>
+</head>
+<body>
+
+  <h1>Timetable Viewer</h1>
+  <p>Sign in with your Google Account to see your upcoming classes.</p>
+
+  <button id="authorize_button" style="display: none;">Authorize</button>
+  <button id="signout_button" style="display: none;">Sign Out</button>
+
+  <hr>
+
+  <h2>Your Upcoming Classes:</h2>
+  <pre id="events"></pre>
+
+  <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
+  <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
+  
+  <script src="script.js"></script>
+
+</body>
+</html>
+// --- Configuration ---
+// Add your own client ID here.
+const CLIENT_ID = 'YOUR_CLIENT_ID.apps.googleusercontent.com';
+
+// The permissions your app needs to request from the user.
+const SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
+
+let tokenClient;
+let gapiInited = false;
+let gisInited = false;
+
+const authorizeButton = document.getElementById('authorize_button');
+const signoutButton = document.getElementById('signout_button');
+const eventsContainer = document.getElementById('events');
+
+// --- Initialization ---
+
+// Called after the Google API library loads.
+function gapiLoaded() {
+  gapi.load('client', initializeGapiClient);
+}
+
+// Called after the Google Identity Services library loads.
+function gisLoaded() {
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: CLIENT_ID,
+    scope: SCOPES,
+    callback: '', // Will be set dynamically
+  });
+  gisInited = true;
+  maybeEnableButtons();
+}
+
+// Initializes the GAPI client.
+async function initializeGapiClient() {
+  await gapi.client.init({
+    discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
+  });
+  gapiInited = true;
+  maybeEnableButtons();
+}
+
+function maybeEnableButtons() {
+  if (gapiInited && gisInited) {
+    authorizeButton.style.display = 'block';
+  }
+}
+
+// --- Authentication ---
+
+// Called when the "Authorize" button is clicked.
+authorizeButton.onclick = function handleAuthClick() {
+  tokenClient.callback = async (resp) => {
+    if (resp.error !== undefined) {
+      throw (resp);
+    }
+    signoutButton.style.display = 'block';
+    authorizeButton.innerText = 'Refresh';
+    await listUpcomingEvents();
+  };
+
+  if (gapi.client.getToken() === null) {
+    tokenClient.requestAccessToken({prompt: 'consent'});
+  } else {
+    tokenClient.requestAccessToken({prompt: ''});
+  }
+};
+
+// Called when the "Sign Out" button is clicked.
+signoutButton.onclick = function handleSignoutClick() {
+  const token = gapi.client.getToken();
+  if (token !== null) {
+    google.accounts.oauth2.revoke(token.access_token);
+    gapi.client.setToken('');
+    eventsContainer.innerText = '';
+    signoutButton.style.display = 'none';
+    authorizeButton.innerText = 'Authorize';
+  }
+};
+
+
+// --- API Interaction ---
+
+/**
+ * Fetches and displays the next 10 events from the user's primary calendar.
+ */
+async function listUpcomingEvents() {
+  let response;
+  try {
+    const request = {
+      'calendarId': 'primary',
+      'timeMin': (new Date()).toISOString(),
+      'showDeleted': false,
+      'singleEvents': true,
+      'maxResults': 10,
+      'orderBy': 'startTime',
+    };
+    response = await gapi.client.calendar.events.list(request);
+  } catch (err) {
+    eventsContainer.innerText = 'Error: ' + err.message;
+    return;
+  }
+
+  const events = response.result.items;
+  if (!events || events.length == 0) {
+    eventsContainer.innerText = 'No upcoming events found.';
+    return;
+  }
+
+  // Format the output
+  const output = events.reduce((str, event) => {
+    const when = event.start.dateTime || event.start.date;
+    return `${str}${event.summary} (${when})\n`;
+  }, 'Events:\n');
+  
+  eventsContainer.innerText = output;
+}

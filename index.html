@@ -1,0 +1,3031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>edify.com</title>
+    <style>
+        /* Global Styles & Variables */
+        :root {
+            --bg-color: #f7f9fc;
+            --container-bg-color: #ffffff;
+            --text-color: #2c3e50;
+            --label-color: #7f8c8d;
+            --input-border-color: #dfe6e9;
+            --primary-color: #3498db; /* Default primary color */
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --secondary-color: #bdc3c7;
+            --secondary-hover: #95a5a6;
+            --header-bg: #ffffff;
+            --header-text: #2c3e50;
+            --nav-link-hover: #ecf0f1;
+            --pill-bg: #ecf0f1;
+            --pill-text: #34495e;
+            --tt-cell-bg: #fdfefe;
+            --border-radius-sm: 8px;
+            --border-radius-md: 12px;
+            --card-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body.dark-mode {
+            --bg-color: #121212; /* Near-black background */
+            --container-bg-color: #1E1E1E; /* Dark gray for cards and headers */
+            --text-color: #e0e0e0;
+            --label-color: #a7a7a7;
+            --input-border-color: #444444;
+            --header-bg: #1E1E1E;
+            --header-text: #e0e0e0;
+            --nav-link-hover: #333333;
+            --pill-bg: #333333;
+            --pill-text: #f8f9fa;
+            --tt-cell-bg: #222222;
+            --card-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            transition: background-color 0.3s, color 0.3s;
+            font-size: 16px;
+        }
+
+        /* Main Login Page Styles */
+        #mainLoginContainer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100vh;
+        }
+
+        .login-box {
+            background-color: var(--container-bg-color);
+            padding: 40px;
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--card-shadow);
+            width: 380px;
+            text-align: center;
+            border: 1px solid var(--input-border-color);
+        }
+        
+        .login-box h2 {
+            margin-top: 0;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--label-color);
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--input-border-color);
+            border-radius: var(--border-radius-sm);
+            box-sizing: border-box;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-size: 16px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.2);
+        }
+
+        .action-button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+            background-color: var(--primary-color);
+            box-shadow: 0 4px 10px rgba(var(--primary-color-rgb), 0.3);
+        }
+
+        .action-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(var(--primary-color-rgb), 0.4);
+        }
+
+        .action-button:disabled {
+            cursor: not-allowed;
+            background-color: var(--secondary-color);
+            box-shadow: none;
+        }
+        
+        #mainErrorMessage {
+            color: var(--danger-color);
+            margin-top: 15px;
+            font-weight: 500;
+            display: none;
+        }
+
+        /* Dashboard Container Styles */
+        .dashboard-page {
+            display: none;
+            flex-direction: column;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        .header {
+            background-color: var(--header-bg);
+            color: var(--header-text);
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--input-border-color);
+            flex-wrap: wrap;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+        
+        .header h1 { font-size: 20px; margin: 0; font-weight: 600; line-height: 1.2;}
+        .header .welcome-text { font-size: 14px; color: var(--label-color); font-weight: 400;}
+        .header-right { display: flex; align-items: center; gap: 20px; flex-shrink: 0; }
+        .header-left { display: flex; align-items: center; gap: 20px; flex-shrink: 0; }
+        .header-profile-pic { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background-color: var(--nav-link-hover); }
+
+        .nav-bar {
+            background-color: var(--header-bg);
+            padding: 10px 30px;
+            border-bottom: 1px solid var(--input-border-color);
+            display: flex;
+            justify-content: center;
+        }
+        
+        .top-nav { display: flex; margin: 0; justify-content: flex-start; }
+        
+        .content-area { flex-grow: 1; padding: 30px; max-width: 1400px; margin: auto; width: 100%; box-sizing: border-box; overflow-x: hidden;}
+        .content-page { display: none; }
+        .content-page.active { display: block; animation: slideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .theme-switch { display: inline-block; height: 26px; position: relative; width: 50px; }
+        .slider { background-color: #ccc; bottom: 0; cursor: pointer; left: 0; position: absolute; right: 0; top: 0; transition: .4s; border-radius: 26px; }
+        .slider:before { background-color: #fff; bottom: 4px; content: ""; height: 18px; left: 4px; position: absolute; transition: .4s; width: 18px; border-radius: 50%; }
+        input.theme-toggle-input:checked + .slider { background-color: var(--primary-color); }
+        input.theme-toggle-input:checked + .slider:before { transform: translateX(24px); }
+        
+        .card { background-color: var(--container-bg-color); padding: 30px; border-radius: var(--border-radius-md); box-shadow: var(--card-shadow); margin-top: 25px; border: 1px solid var(--input-border-color); }
+        .card h2, .card h3 { margin-top: 0; font-weight: 600; }
+        
+        .logout-button { background: none; border: none; color: var(--danger-color); font-weight: 500; font-size: 16px; cursor: pointer; padding: 8px; }
+
+        /* Role-specific Primary Colors */
+        #adminDashboard { --primary-color: #367BEC; --primary-color-rgb: 54, 123, 236; } /* Vibrant Blue */
+        #hodDashboard { --primary-color: #1abc9c; --primary-color-rgb: 26, 188, 156; }
+        #deanDashboard { --primary-color: #4A90E2; --primary-color-rgb: 74, 144, 226; } /* Brighter Blue */
+        #doaDashboard { --primary-color: #673AB7; --primary-color-rgb: 103, 58, 183; } /* Deep Purple */
+
+        /* Unified Pill Navigation */
+        .pill-nav-container { padding: 2px; background-color: var(--nav-link-hover); border-radius: 50px; position: relative; display: inline-flex; }
+        .top-nav { position: relative; z-index: 2; border-bottom: none !important; padding: 0 !important; }
+        .top-nav a { color: var(--label-color); text-decoration: none; padding: 4px 30px; font-weight: 500; transition: color 0.3s; margin: 0; border-bottom: none; border-radius: 50px;}
+        .top-nav a.active { color: var(--primary-color); }
+        body.dark-mode .top-nav a.active { color: white; }
+        .nav-glider { position: absolute; height: 100%; background-color: var(--container-bg-color); border-radius: 50px; z-index: 1; top: 0; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+        /* Admin Specific */
+        #adminDashboard .constraints-view { background-color: var(--bg-color); border: 1px solid var(--input-border-color); border-radius: var(--border-radius-md); padding: 25px; }
+        #adminDashboard .generate-button { background-color: #1abc9c; box-shadow: 0 4px 10px rgba(26, 188, 156, 0.3); }
+        #adminDashboard .generate-button:hover { background-color: #16a085; box-shadow: 0 6px 15px rgba(26, 188, 156, 0.4); }
+        #adminDashboard #timetable-versions,
+        #doaDashboard #doa-timetable-versions { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; }
+        #adminDashboard .version-btn,
+        #doaDashboard .version-btn { background-color: var(--nav-link-hover); color: var(--label-color); border: none; padding: 10px 20px; border-radius: var(--border-radius-sm); cursor: pointer; font-weight: 600; }
+        #adminDashboard .version-btn.active,
+        #doaDashboard .version-btn.active { background-color: var(--primary-color); color: white; }
+        #adminDashboard #generated-timetable { width: 100%; }
+        #adminDashboard #generated-timetable .class-entry,
+        #doaDashboard #timetable .class-entry {
+            padding: 5px;
+            margin-bottom: 5px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        #adminDashboard #generated-timetable .class-entry span,
+        #doaDashboard #timetable .class-entry span {
+            display: block;
+        }
+
+        .upload-feedback {
+            display: block;
+            margin-top: 10px;
+            font-weight: 500;
+            color: var(--success-color);
+        }
+
+
+        /* HoD Specific */
+        #hodDashboard .publish-button { background-color: var(--success-color); box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3); }
+        #hodDashboard .publish-button:hover { background-color: #27ae60; box-shadow: 0 6px 15px rgba(46, 204, 113, 0.4); }
+        #hodDashboard .pill { border-radius: 16px; }
+
+        /* Dean Specific */
+        .approve-button { background-color: var(--success-color) !important; box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3) !important; }
+        .reject-button { background-color: var(--danger-color) !important; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3) !important; }
+
+        /* DoA Specific */
+        #doa-publish-btn { background-color: var(--success-color); box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3); }
+        .btn-success { background-color: var(--success-color); }
+        .btn-secondary { background-color: var(--secondary-color); }
+        .btn-dark { background-color: #2c3e50; color: white; }
+        body.dark-mode .btn-dark { background-color: #555; }
+        .btn-dark:hover { background-color: #34495e; }
+        #approval-feedback {
+            margin-top: 15px;
+            font-weight: 500;
+            min-height: 20px;
+        }
+
+        /* Settings Panel Styles */
+        .settings-button { font-size: 26px; cursor: pointer; background: none; border: none; color: var(--label-color); padding: 5px; transition: color 0.3s; }
+        .settings-button:hover { color: var(--text-color); }
+        .settings-panel {
+            position: fixed; top: 0; right: 0; width: 280px; height: 100%; background-color: var(--container-bg-color);
+            z-index: 1002; box-shadow: -5px 0 15px rgba(0,0,0,0.1); transform: translateX(100%);
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column;
+        }
+        .settings-panel.open { transform: translateX(0); }
+        .settings-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 1px solid var(--input-border-color); flex-shrink: 0; }
+        .settings-header h3 { margin: 0; font-size: 18px; }
+        .close-settings-btn { background: none; border: none; font-size: 28px; cursor: pointer; color: var(--label-color); }
+        .settings-content { flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto; }
+        .settings-content .settings-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 1px solid var(--input-border-color); }
+        .settings-item a { text-decoration: none; color: var(--text-color); display: flex; align-items: center; width: 100%; }
+        .settings-item a:hover { color: var(--primary-color); }
+        .settings-content .settings-item span { font-weight: 500; font-size: 15px; }
+        .settings-item-help { margin-top: auto; border-top: 1px solid var(--input-border-color); }
+        .settings-item-logout { border-bottom: none !important; }
+        .settings-logout { width: 100%; background: none; border: none; color: var(--danger-color); font-size: 16px; font-weight: 600; cursor: pointer; text-align: left; padding: 0; }
+        #settings-overlay {
+            position: fixed; inset: 0; background-color: rgba(0,0,0,0.5); z-index: 1001; opacity: 0;
+            visibility: hidden; transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        #settings-overlay.show { opacity: 1; visibility: visible; }
+
+        /* Universal Modal Styles */
+        .universal-modal {
+            position: fixed; z-index: 1003; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6);
+            display: flex; justify-content: center; align-items: center; visibility: hidden; opacity: 0;
+            transition: visibility 0s 0.3s, opacity 0.3s ease-in-out;
+        }
+        .universal-modal.show { visibility: visible; opacity: 1; transition-delay: 0s; }
+        .universal-modal .modal-content {
+            background-color: var(--container-bg-color); padding: 30px; border-radius: var(--border-radius-md); width: 90%; max-width: 600px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.25); transform: scale(0.95); transition: transform 0.3s ease-in-out; position: relative;
+        }
+        .universal-modal.show .modal-content { transform: scale(1); }
+        .universal-modal h2 { margin-top: 0; text-align: center; }
+        .universal-modal .close-button { position: absolute; top: 15px; right: 20px; font-size: 28px; cursor: pointer; color: var(--label-color); }
+        
+        table {
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+            border: 1px solid var(--input-border-color);
+            border-radius: var(--border-radius-md);
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--input-border-color);
+        }
+        tbody tr:last-child td { border-bottom: none; }
+        thead th {
+            background-color: var(--bg-color);
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+        thead th:first-child { border-top-left-radius: var(--border-radius-md); }
+        thead th:last-child { border-top-right-radius: var(--border-radius-md); }
+        tbody tr:hover { background-color: var(--nav-link-hover); }
+        
+        /* --- STYLES BELOW THIS LINE ARE LARGELY UNCHANGED FROM PREVIOUS VERSION --- */
+        #adminDashboard #user-table {border: none; border-radius: 0;}
+        #adminDashboard .invite-button { padding: 5px 10px; font-size: 14px; background-color: #6c757d; cursor: pointer; border: none; border-radius: 4px; color: white; }
+        #adminDashboard .invite-button:disabled { cursor: default; opacity: 0.7; }
+        #adminDashboard .invite-button.joined { background-color: var(--success-color); }
+        #adminDashboard .remove-button { background: none; border: none; font-size: 20px; cursor: pointer; padding: 0 5px; vertical-align: middle; }
+        #adminDashboard .table-actions { text-align: right; margin-top: 20px; }
+        #adminDashboard .upload-container { display: flex; gap: 40px; }
+        #adminDashboard .upload-section { flex: 1; padding: 20px; border: 1px solid var(--input-border-color); border-radius: 8px; }
+        #adminDashboard #school-group, #adminDashboard #department-group { display: none; }
+        #adminDashboard .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); justify-content: center; align-items: center; }
+        #adminDashboard .modal.show { display: flex; }
+        #adminDashboard .modal-content { background-color: var(--container-bg-color); padding: 30px; border-radius: 8px; width: 90%; max-width: 500px; text-align: center; }
+        #adminDashboard .time-inputs { display: flex; gap: 20px; }
+        #adminDashboard .constraints-view-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--input-border-color); }
+        #adminDashboard .constraints-view-item:last-child { border-bottom: none; margin-bottom: 0; }
+        #adminDashboard .constraints-view-label { font-weight: 600; color: var(--label-color); }
+        #adminDashboard .constraints-view-value { font-weight: bold; }
+        #adminDashboard #update-constraints-btn { width: auto; padding: 10px 20px; float: right; margin-top: -10px; }
+        #adminDashboard .close-button { position: absolute; top: 10px; right: 15px; font-size: 28px; font-weight: bold; cursor: pointer; color: var(--label-color); }
+        #adminDashboard .button-container { text-align: right; margin-top: 30px; }
+        #adminDashboard #generation-error { color: var(--danger-color); margin-bottom: 10px; font-weight: 600; display: none; text-align: right; }
+        #hodDashboard .adjust-btn { background-color: var(--secondary-color); color: white; border: none; border-radius: 4px; padding: 6px 12px; cursor: pointer;}
+        #hodDashboard .assignment-form-container { display: flex; gap: 20px; align-items: flex-end; }
+        #hodDashboard .assignment-form-container .form-group { flex-grow: 1; }
+        #hodDashboard .assignment-form-container .form-group.small { flex-grow: 0; min-width: 150px; }
+        #hodDashboard .remove-button { background: none; border: none; font-size: 20px; cursor: pointer; }
+        #hodDashboard .multi-select-container { position: relative; }
+        #hodDashboard .pills-input-wrapper { display: flex; flex-wrap: wrap; gap: 5px; padding: 5px; border: 1px solid var(--input-border-color); border-radius: 8px; min-height: 40px; align-items: center; cursor: text; transition: border-color 0.2s; }
+        #hodDashboard .pills-input-wrapper:focus-within { border-color: var(--primary-color); }
+        #hodDashboard .pill .remove-pill { margin-left: 8px; cursor: pointer; font-weight: bold; }
+        #hodDashboard .multi-select-container input { border: none; outline: none; padding: 5px; font-size: 16px; flex-grow: 1; min-width: 120px; background-color: transparent; color: var(--text-color); }
+        #hodDashboard .dropdown-options { display: none; position: absolute; width: 100%; background-color: var(--container-bg-color); border: 1px solid var(--input-border-color); border-top: none; border-radius: 0 0 8px 8px; max-height: 150px; overflow-y: auto; z-index: 10; }
+        #hodDashboard .dropdown-options.visible { display: block; }
+        #hodDashboard .dropdown-option { padding: 10px; cursor: pointer; transition: background-color 0.2s; }
+        #hodDashboard .dropdown-option:not(.disabled):hover { background-color: var(--pill-bg); }
+        #hodDashboard .dropdown-option.disabled { cursor: not-allowed; color: var(--label-color); opacity: 0.6; }
+        #hodDashboard .card-footer-actions { margin-top: 20px; text-align: right; }
+        #hodDashboard .card-footer-actions .publish-button { width: auto; }
+        #hodDashboard .publish-button:disabled { background-color: #6c757d; cursor: default; }
+        #hodDashboard .status { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+        #hodDashboard .status.balanced, #hodDashboard .status.submitted { background-color: var(--success-color); color: white; }
+        #hodDashboard .status.under-loaded, #hodDashboard .status.pending { background-color: var(--warning-color); color: #333; }
+        #hodDashboard .status.over-loaded { background-color: var(--danger-color); color: white; }
+        #hodDashboard .reminder-button { padding: 5px 10px; font-size: 14px; background-color: #6c757d; cursor: pointer; border: none; border-radius: 4px; color: white; transition: background-color 0.3s; }
+        #hodDashboard .reminder-button:disabled { opacity: 0.5; cursor: default; }
+        #hodDashboard .reminder-button.sent { background-color: var(--success-color); }
+
+        /* Timetable Specific Enhancements for Dean/DoA */
+        #deanDashboard #timetable thead th,
+        #doaDashboard #timetable thead th,
+        #doaDashboard #faculty-workload-table thead th {
+            font-weight: 600;
+            font-size: 16px;
+            color: white;
+            padding: 16px;
+            text-align: center;
+            background-color: var(--primary-color);
+        }
+        #deanDashboard #timetable tbody th,
+        #doaDashboard #timetable tbody th {
+            background-color: var(--nav-link-hover);
+            font-weight: 600;
+            font-size: 14px;
+            text-align: center;
+            vertical-align: middle;
+            width: 120px;
+            color: var(--primary-color);
+        }
+        #deanDashboard .class-entry,
+        #doaDashboard .class-entry {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+            border-radius: var(--border-radius-sm);
+        }
+        #deanDashboard .class-entry:hover,
+        #doaDashboard .class-entry:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        #deanDashboard .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; margin-bottom: 25px; }
+        #deanDashboard .kpi-card { background-color: var(--bg-color); padding: 25px; border-radius: var(--border-radius-md); }
+        #deanDashboard .kpi-card .kpi-title { font-size: 16px; color: var(--label-color); margin-bottom: 10px; }
+        #deanDashboard .kpi-card .kpi-value { font-size: 32px; font-weight: 600; margin-bottom: 10px; }
+        #deanDashboard .kpi-card .kpi-change { font-size: 14px; font-weight: 500; }
+        #deanDashboard .kpi-card .kpi-change.positive { color: var(--success-color); }
+        #deanDashboard .kpi-card .kpi-change.negative { color: var(--danger-color); }
+        
+        #deanDashboard #timetable { text-align: center; }
+        #deanDashboard #timetable td { height: 60px; }
+        #deanDashboard .class-entry { border-left: 5px solid var(--primary-color); padding: 8px; text-align: left; }
+        #deanDashboard .class-entry strong { display: block; }
+        #deanDashboard .class-entry span { font-size: 12px; color: var(--label-color); }
+        #deanDashboard .status { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+        #deanDashboard .status.completed { background-color: var(--success-color); color: white; }
+        #deanDashboard .status.pending { background-color: var(--warning-color); color: #333; }
+        #deanDashboard .timetable-actions { margin-top: 20px; text-align: right; display: flex; gap: 10px; justify-content: flex-end; }
+        #deanDashboard .timetable-actions .action-button { width: auto; padding: 10px 20px; }
+        #deanDashboard .announcement-form textarea { width: 100%; min-height: 80px; padding: 10px; border: 1px solid var(--input-border-color); border-radius: 8px; font-family: inherit; font-size: 16px; background-color: var(--bg-color); color: var(--text-color); }
+        #deanDashboard .announcement-feed { margin-top: 30px; }
+        #deanDashboard .announcement-post { border: 1px solid var(--input-border-color); border-radius: 8px; padding: 15px; margin-bottom: 15px; }
+        #deanDashboard .announcement-post p { margin-top: 0; }
+        #deanDashboard .announcement-post .meta { font-size: 12px; color: var(--label-color); }
+        
+        #doaDashboard #school-progress-table .school-header td,
+        #doaDashboard #faculty-workload-table .school-header td { background-color: var(--bg-color); font-weight: bold; font-size: 18px; color: var(--primary-color); }
+        #doaDashboard #school-progress-table .department-row td:first-child,
+        #doaDashboard #faculty-workload-table .department-row td:first-child { padding-left: 40px; }
+        #doaDashboard #timetable-wrapper { overflow-x: auto; }
+        #doaDashboard #timetable td { height: 120px; }
+        #doaDashboard .class-entry { padding: 8px; text-align: left; margin-bottom: 8px; font-size: 14px; }
+        #doaDashboard .class-entry.engineering { background-color: #eaf2f8; border-left: 5px solid #4A90E2; }
+        #doaDashboard .class-entry.law { background-color: #e8f8f5; border-left: 5px solid #27ae60; }
+        #doaDashboard .class-entry.management { background-color: #fef5e7; border-left: 5px solid #f39c12; }
+        body.dark-mode #doaDashboard .class-entry.engineering { background-color: #283747; border-left-color: #5dade2; }
+        body.dark-mode #doaDashboard .class-entry.law { background-color: #23413a; border-left-color: #58d68d; }
+        body.dark-mode #doaDashboard .class-entry.management { background-color: #4a3c29; border-left-color: #f5b041; }
+        #doaDashboard .class-entry strong { display: block; }
+        #doaDashboard .class-entry span { font-size: 12px; color: var(--label-color); display: block; }
+        #doaDashboard .status { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+        #doaDashboard .status.approved, #doaDashboard .status.active { background-color: var(--success-color); color: white; }
+        #doaDashboard .status.pending { background-color: var(--warning-color); color: #333; }
+        #doaDashboard .status.conflict-detected { background-color: var(--danger-color); color: white; }
+        #doaDashboard #approval-modal .modal-content { max-width: 500px; text-align: center; }
+        #doaDashboard #approval-modal h3 { font-size: 24px; margin-top: 0; color: var(--text-color); }
+        #doaDashboard #approval-modal p { font-size: 16px; color: var(--label-color); margin-bottom: 25px; }
+        #doaDashboard #approval-modal .modal-buttons { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
+        #doaDashboard #approval-modal .modal-buttons button { padding: 12px 25px; white-space: nowrap; width: auto;}
+        
+        .profile-pic-container {
+            width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 20px; background-color: var(--bg-color);
+            border: 3px solid var(--input-border-color); display: flex; justify-content: center; align-items: center; cursor: pointer; overflow: hidden;
+        }
+        .profile-pic-container img { width: 100%; height: 100%; object-fit: cover; }
+        .profile-pic-container .placeholder-text { font-size: 14px; color: var(--label-color); text-align: center; }
+        #profilePhotoInput { display: none; }
+        #save-profile-btn { width: 100%; margin-top: 15px; }
+        .feedback-message { text-align: center; margin-top: 10px; opacity: 0; transition: opacity 0.5s; font-weight: 600; }
+        #profile-save-feedback, #password-feedback, #override-feedback { color: var(--success-color); }
+        #password-feedback.error, #verification-feedback.error { color: var(--danger-color); }
+        .settings-option { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--input-border-color); }
+        .settings-option:last-of-type { border-bottom: none; }
+        .settings-option .settings-action-btn { background-color: var(--secondary-color); color: white; border: none; padding: 5px 12px; font-size: 14px; font-weight: 500; cursor: pointer; transition: background-color 0.2s; border-radius: var(--border-radius-sm); }
+        .settings-option .settings-action-btn:hover { background-color: var(--secondary-hover); }
+        .delete-account-btn { margin-top: 30px; background-color: var(--danger-color); width: auto; padding: 10px 25px; display: block; margin-left: auto; margin-right: auto; }
+        #deleteAccountModal .modal-buttons { display: flex; justify-content: flex-end; gap: 15px; margin-top: 25px; }
+        #deleteAccountModal .modal-buttons .action-button { width: auto; padding: 10px 25px; }
+        #deleteAccountModal #confirm-delete-btn { background-color: var(--danger-color); }
+        #deleteAccountModal #cancel-delete-btn { background-color: var(--secondary-color); }
+        #auditLogModal .modal-content { max-width: 800px; }
+        .override-btn { background-color: var(--warning-color); color: #333; border: none; border-radius: 4px; padding: 5px 10px; cursor: pointer; }
+        .override-btn:disabled { background-color: var(--secondary-color); color: white; cursor: not-allowed; opacity: 0.7; }
+        #overrideOptionsForm .form-group { margin-bottom: 15px; }
+        .verification-step { display: none; }
+        .verification-step.active { display: block; }
+        #verification-feedback { font-weight: 500; }
+    </style>
+</head>
+<body>
+    <!-- Main Login Container -->
+    <div id="mainLoginContainer">
+        <div class="login-box">
+            <h2>College Portal Login</h2>
+            <form id="mainLoginForm">
+                <div class="form-group">
+                    <label for="roleSelect">Select Your Role</label>
+                    <select id="roleSelect" required>
+                        <option value="">-- Please select --</option>
+                        <option value="admin">IT Head (Admin)</option>
+                        <option value="hod">Head of Department (HoD)</option>
+                        <option value="dean">Dean</option>
+                        <option value="doa">Dean of Academics</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="mainEmail">Demo Email</label>
+                    <input type="email" id="mainEmail" value="admin@college.edu" required>
+                </div>
+                <div class="form-group">
+                    <label for="mainPassword">Demo Password</label>
+                    <input type="password" id="mainPassword" value="password" required>
+                </div>
+                <button type="submit" class="action-button">Login</button>
+                <p id="mainErrorMessage">Invalid credentials for the selected role.</p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard" class="dashboard-page">
+        <div class="header">
+            <div class="header-left">
+                <img src="https://i.ibb.co/9g0g2g7/admin-pic.png" alt="Admin Profile Pic" class="header-profile-pic" id="admin-header-pic">
+                <div>
+                    <h1>Admin Portal</h1>
+                    <span class="welcome-text" id="admin-welcome-text">Welcome, Admin</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="settings-button">⚙️</button>
+            </div>
+        </div>
+        <div class="nav-bar">
+            <div class="pill-nav-container">
+                 <div class="nav-glider"></div>
+                <nav class="top-nav">
+                    <a href="#home" class="nav-link active">Home</a>
+                    <a href="#users" class="nav-link">User Management</a>
+                    <a href="#students" class="nav-link">Students Database</a>
+                    <a href="#college" class="nav-link">College Database</a>
+                    <a href="#timetables" class="nav-link">Generated Timetables</a>
+                </nav>
+            </div>
+        </div>
+        <div class="content-area">
+            <div id="home-content" class="content-page active">
+                <div class="card">
+                    <h2>Configure Constraints</h2>
+                    <div id="viewConstraints" class="constraints-view">
+                        <div class="constraints-view-item"><span class="constraints-view-label">Working Hours</span><span class="constraints-view-value"><span id="viewStartTime"></span> - <span id="viewEndTime"></span></span></div>
+                        <div class="constraints-view-item"><span class="constraints-view-label">Lunch Break</span><span class="constraints-view-value"><span id="viewLunchStart"></span> - <span id="viewLunchEnd"></span></span></div>
+                        <div class="constraints-view-item"><span class="constraints-view-label">Max Consecutive Lectures</span><span class="constraints-view-value" id="viewMaxLectures"></span></div>
+                        <div class="constraints-view-item"><span class="constraints-view-label">Max Batches per Assignment</span><span class="constraints-view-value" id="viewMaxBatches"></span></div>
+                        <button id="update-constraints-btn" class="action-button" style="width: auto;">Update</button>
+                        <div style="clear:both;"></div>
+                    </div>
+                </div>
+                <div class="button-container">
+                    <p id="generation-error">Error: Please upload required data first.</p>
+                    <button class="action-button generate-button" id="generate-button">Generate Timetables</button>
+                </div>
+            </div>
+            <div id="users-content" class="content-page">
+                <div class="card">
+                    <h2>User Management</h2>
+                    <form id="addUserForm">
+                        <div class="form-group"><label for="userName">Full Name</label><input type="text" id="userName" required></div>
+                        <div class="form-group"><label for="userEmail">Email</label><input type="email" id="userEmail" required></div>
+                        <div class="form-group">
+                            <label for="userRole">Assign Role</label>
+                            <select id="userRole"><option value="">--Select a Role--</option><option value="Dean of Academics">Dean of Academics</option><option value="Dean">Dean (School)</option><option value="HoD">HoD (Department)</option></select>
+                        </div>
+                        <div class="form-group" id="school-group"><label for="userSchool">Select School</label><select id="userSchool"></select></div>
+                        <div class="form-group" id="department-group"><label for="userDepartment">Select Department / Program</label><select id="userDepartment"></select></div>
+                        <button type="submit" class="action-button">Add User</button>
+                        <p id="form-error"></p>
+                    </form>
+                </div>
+                <div class="card">
+                    <table>
+                        <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Action</th></tr></thead>
+                        <tbody id="user-table"></tbody>
+                    </table>
+                    <div class="table-actions"><button class="action-button" id="invite-all-button" style="width: auto; padding: 10px 20px;">Invite All</button></div>
+                </div>
+            </div>
+            <div id="students-content" class="content-page">
+                <div class="card">
+                    <h2>Students Database</h2>
+                    <div class="upload-section">
+                        <h4>Upload Student Database</h4>
+                        <label for="student-file">Select Student CSV file:</label>
+                        <input type="file" id="student-file" accept=".csv" style="padding: 5px;">
+                        <button class="action-button upload-button" data-type="student" style="width: auto; padding: 10px 20px;">Upload Students</button>
+                        <span class="upload-feedback" id="student-upload-feedback"></span>
+                    </div>
+                </div>
+            </div>
+            <div id="college-content" class="content-page">
+                <div class="card">
+                    <h2>College Database</h2>
+                    <div class="upload-container">
+                        <div class="upload-section">
+                            <h4>Classroom Database</h4>
+                            <label for="classroom-file">Select Classroom CSV file:</label>
+                            <input type="file" id="classroom-file" accept=".csv" style="padding: 5px;">
+                            <button class="action-button upload-button" data-type="classroom" style="width: auto; padding: 10px 20px;">Upload Classrooms</button>
+                             <span class="upload-feedback" id="classroom-upload-feedback"></span>
+                        </div>
+                        <div class="upload-section">
+                            <h4>Faculty Database</h4>
+                            <label for="faculty-file">Select Faculty CSV file:</label>
+                            <input type="file" id="faculty-file" accept=".csv" style="padding: 5px;">
+                            <button class="action-button upload-button" data-type="faculty" style="width: auto; padding: 10px 20px;">Upload Faculty</button>
+                             <span class="upload-feedback" id="faculty-upload-feedback"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+             <div id="timetables-content" class="content-page">
+                <div class="card">
+                    <h2>Generated Timetables</h2>
+                    <p>Four unique, clash-free timetable versions have been generated. Review and select the best option to forward to the Deans.</p>
+                    <div id="timetable-versions"></div>
+                    <div id="timetable-display">
+                        <table id="generated-timetable">
+                            <thead></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="button-container" style="margin-top: 20px; text-align: right;">
+                    <button class="action-button" id="send-for-approval-btn" style="width: auto; background-color: var(--success-color);">Send All Versions for Approval</button>
+                </div>
+            </div>
+        </div>
+        <div id="constraintsModal" class="modal">
+            <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <form id="constraintsForm">
+                    <h3>Set Scheduling Constraints</h3>
+                    <div class="form-group">
+                        <h4>College Working Timings</h4>
+                        <div class="time-inputs">
+                            <div style="flex: 1;"><label for="startTime">Start Time</label><input type="time" id="startTime"></div>
+                            <div style="flex: 1;"><label for="endTime">End Time</label><input type="time" id="endTime"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <h4>Lunch Break</h4>
+                        <div class="time-inputs">
+                            <div style="flex: 1;"><label for="lunchStart">Lunch Start</label><input type="time" id="lunchStart"></div>
+                            <div style="flex: 1;"><label for="lunchEnd">Lunch End</label><input type="time" id="lunchEnd"></div>
+                        </div>
+                    </div>
+                    <div class="form-group"><label for="maxLectures">Max Consecutive Lectures</label><input type="number" id="maxLectures" min="1"></div>
+                    <div class="form-group"><label for="maxBatches">Max Batches per Assignment</label><input type="number" id="maxBatches" min="1"></div>
+                    <button type="submit" class="action-button">Save Constraints</button>
+                </form>
+            </div>
+        </div>
+        <div class="settings-panel">
+            <div class="settings-header">
+                <h3>Settings</h3>
+                <button class="close-settings-btn">&times;</button>
+            </div>
+            <div class="settings-content">
+                <div class="settings-item">
+                    <a href="#" class="profile-link"><span>👤 Profile</span></a>
+                </div>
+                <div class="settings-item">
+                    <a href="#" class="account-settings-link"><span>⚙️ Account Settings</span></a>
+                </div>
+                <div class="settings-item">
+                    <a href="#" class="notifications-link"><span>🔔 Notifications</span></a>
+                </div>
+                <div class="settings-item theme-switch-wrapper">
+                    <span class="theme-text-label">Light Mode <span class="theme-emoji-span">☀️</span></span>
+                    <label class="theme-switch" for="adminThemeToggle"><input type="checkbox" id="adminThemeToggle" class="theme-toggle-input" /><div class="slider"></div></label>
+                </div>
+                <div class="settings-item settings-item-help">
+                    <a href="#"><span>❓ Help</span></a>
+                </div>
+                <div class="settings-item settings-item-logout">
+                     <button class="logout-button settings-logout">⏻ Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- HoD Dashboard -->
+    <div id="hodDashboard" class="dashboard-page">
+        <div class="header">
+            <div class="header-left">
+                <img src="https://i.ibb.co/bJCg0V9/hod-pic.png" alt="HoD Profile Pic" class="header-profile-pic" id="hod-header-pic">
+                <div>
+                    <h1>HoD Panel</h1>
+                    <span class="welcome-text" id="hod-welcome-text">Welcome, HoD</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="settings-button">⚙️</button>
+            </div>
+        </div>
+        <div class="nav-bar">
+             <div class="pill-nav-container">
+                 <div class="nav-glider"></div>
+                <nav class="top-nav">
+                    <a href="#hod-home" class="nav-link active">Assign Faculty</a>
+                    <a href="#hod-adjustments" class="nav-link">Adjustments</a>
+                    <a href="#hod-workload" class="nav-link">Faculty Workload</a>
+                    <a href="#hod-preferences" class="nav-link">Faculty Preferences</a>
+                </nav>
+            </div>
+        </div>
+        <div class="content-area">
+            <div id="hod-home-content" class="content-page active">
+                <div class="card">
+                    <h2>Assign Faculty</h2>
+                    <div class="assignment-form-container">
+                        <div class="form-group">
+                            <label>Select Batch(es)</label>
+                            <div class="multi-select-container" id="batch-multi-select">
+                                <div class="pills-input-wrapper" id="pills-container">
+                                    <input type="text" id="batch-search" placeholder="Click to select...">
+                                </div>
+                                <div class="dropdown-options" id="batch-dropdown"></div>
+                            </div>
+                        </div>
+                        <div class="form-group small">
+                            <label for="classes-per-week">Classes / Week</label>
+                            <select id="classes-per-week"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="faculty-select">Select Faculty</label>
+                            <select id="faculty-select"></select>
+                        </div>
+                        <button class="action-button" id="assign-button" style="height: 48px; width: auto; padding-left: 20px; padding-right: 20px;">Assign</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <h2>Assigned</h2>
+                    <table id="assignments-table">
+                        <thead><tr><th>Batch(es)</th><th>Assigned Faculty</th><th>Classes/Week</th><th>Action</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="card-footer-actions">
+                    <button class="action-button publish-button" id="publish-button">Upload</button>
+                </div>
+            </div>
+             <div id="hod-adjustments-content" class="content-page">
+                <div class="card">
+                    <h2>Daily Schedule Adjustments</h2>
+                    <p>Select a class from today's schedule to make real-time adjustments.</p>
+                    <table id="daily-schedule-table">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Class / Subject</th>
+                                <th>Classroom</th>
+                                <th>Faculty</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Rows will be dynamically inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="hod-workload-content" class="content-page">
+                <div class="card">
+                    <h2>Current Faculty Workload</h2>
+                    <table id="workload-table">
+                        <thead><tr><th>Faculty Name</th><th>Assigned Hours / Week</th><th>Status</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="hod-preferences-content" class="content-page">
+                <div class="card">
+                    <h2>Faculty Preferences Status</h2>
+                    <table id="preferences-table">
+                        <thead><tr><th>Faculty Name</th><th>Submission Status</th><th>Action</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="settings-panel">
+            <div class="settings-header">
+                <h3>Settings</h3>
+                <button class="close-settings-btn">&times;</button>
+            </div>
+            <div class="settings-content">
+                <div class="settings-item">
+                    <a href="#" class="profile-link"><span>👤 Profile</span></a>
+                </div>
+                <div class="settings-item">
+                    <a href="#" class="account-settings-link"><span>⚙️ Account Settings</span></a>
+                </div>
+                <div class="settings-item">
+                    <a href="#" class="notifications-link"><span>🔔 Notifications</span></a>
+                </div>
+                <div class="settings-item theme-switch-wrapper">
+                    <span class="theme-text-label">Light Mode <span class="theme-emoji-span">☀️</span></span>
+                    <label class="theme-switch" for="hodThemeToggle"><input type="checkbox" id="hodThemeToggle" class="theme-toggle-input" /><div class="slider"></div></label>
+                </div>
+                <div class="settings-item settings-item-help">
+                    <a href="#"><span>❓ Help</span></a>
+                </div>
+                <div class="settings-item settings-item-logout">
+                     <button class="logout-button settings-logout">⏻ Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dean Dashboard -->
+    <div id="deanDashboard" class="dashboard-page">
+        <div class="header">
+            <div class="header-left">
+                <img src="https://i.ibb.co/z5wQzYp/dean-pic.png" alt="Dean Profile Pic" class="header-profile-pic" id="dean-header-pic">
+                <div>
+                    <h1>Dean's Dashboard</h1>
+                    <span class="welcome-text" id="dean-welcome-text">Welcome, Dean</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="settings-button">⚙️</button>
+            </div>
+        </div>
+        <div class="nav-bar">
+             <div class="pill-nav-container">
+                 <div class="nav-glider"></div>
+                <nav class="top-nav">
+                    <a href="#dean-home" class="nav-link active">Dashboard Analytics</a>
+                    <a href="#dean-timetable" class="nav-link">View Timetable</a>
+                    <a href="#dean-resources" class="nav-link">Resource Utilization</a>
+                    <a href="#dean-announcements" class="nav-link">Announcements</a>
+                </nav>
+            </div>
+        </div>
+        <div class="content-area">
+            <div id="dean-home-content" class="content-page active">
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-title">Total Students</div>
+                        <div class="kpi-value" id="dean-total-students">0</div>
+                        <div class="kpi-change positive" id="dean-student-change">+0% This semester</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-title">Faculty Members</div>
+                        <div class="kpi-value" id="dean-faculty-count">0</div>
+                        <div class="kpi-change positive" id="dean-faculty-change">+0 This year</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-title">Avg. Class Size</div>
+                        <div class="kpi-value" id="dean-avg-class-size">0</div>
+                        <div class="kpi-change negative" id="dean-class-size-change">-0% vs Last Year</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-title">Classroom Utilization</div>
+                        <div class="kpi-value" id="dean-classroom-utilization">0%</div>
+                        <div class="kpi-change positive" id="dean-utilization-change">+0%</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h2>Departmental Progress Overview</h2>
+                    <table id="progress-table">
+                        <thead><tr><th>Department</th><th>Head of Department (HoD)</th><th>Assignment Status</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="dean-timetable-content" class="content-page">
+                <div class="card">
+                    <h2>Generated Timetable for Computer Science</h2>
+                    <table id="timetable">
+                        <thead><tr><th>Time</th><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th></tr></thead>
+                        <tbody>
+                            <tr><th>09:00-10:00</th><td><div class="class-entry"><strong>Data Structures</strong><span>Dr. Priya Singh</span><span>Room: C-101</span></div></td><td></td><td><div class="class-entry"><strong>Algorithms</strong><span>Dr. Rohan Mehta</span><span>Room: C-102</span></div></td><td></td><td><div class="class-entry"><strong>Data Structures</strong><span>Dr. Priya Singh</span><span>Room: C-101</span></div></td></tr>
+                            <tr><th>10:00-11:00</th><td></td><td><div class="class-entry"><strong>Data Structures</strong><span>Dr. Priya Singh</span><span>Room: C-102</span></div></td><td></td><td><div class="class-entry"><strong>Algorithms</strong><span>Dr. Rohan Mehta</span><span>Room: C-101</span></div></td><td></td></tr>
+                            <tr><th>11:00-12:00</th><td><div class="class-entry"><strong>Algorithms</strong><span>Dr. Rohan Mehta</span><span>Room: C-101</span></div></td><td></td><td></td><td></td><td><div class="class-entry"><strong>Algorithms</strong><span>Dr. Rohan Mehta</span><span>Room: C-102</span></div></td></tr>
+                            <tr><th>12:00-13:00</th><td></td><td><div class="class-entry"><strong>Networking Lab</strong><span>Dr. Sunil Kumar</span><span>Lab: L-202</span></div></td><td></td><td><div class="class-entry"><strong>Data Structures</strong><span>Dr. Priya Singh</span><span>Room: C-102</span></div></td><td></td></tr>
+                            <tr><th>13:00-14:00</th><td colspan="5" style="background-color: var(--bg-color); font-weight: bold; text-align:center;">LUNCH</td></tr>
+                        </tbody>
+                    </table>
+                    <div class="timetable-actions">
+                        <button id="dean-reject-button" class="action-button reject-button">Reject</button>
+                        <button id="dean-approve-button" class="action-button approve-button">Approve</button>
+                    </div>
+                    <p id="dean-approval-feedback" class="feedback-message" style="text-align: right; margin-top: 10px;"></p>
+                </div>
+            </div>
+            <div id="dean-resources-content" class="content-page">
+                <div class="card">
+                    <h2>Resource Utilization Report</h2>
+                    <table id="resource-table">
+                        <thead><tr><th>Resource Name</th><th>Type</th><th>Utilization %</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="dean-announcements-content" class="content-page">
+                <div class="card">
+                    <h2>Post a New Announcement</h2>
+                    <form id="announcement-form" class="announcement-form">
+                        <textarea id="announcement-text" placeholder="Type your message..." required></textarea>
+                        <button type="submit" class="action-button" style="width: auto; padding: 10px 20px; margin-top: 10px;">Post</button>
+                    </form>
+                </div>
+                <div class="announcement-feed" id="announcement-feed">
+                    <h2>Latest Announcements</h2>
+                </div>
+            </div>
+        </div>
+         <div id="deanApprovalModal" class="universal-modal">
+            <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <h2>Confirm Approval</h2>
+                <p>Are you sure you want to approve this timetable?</p>
+                <div class="modal-buttons" style="justify-content: flex-end;">
+                    <button id="cancel-dean-approval-btn" class="action-button btn-secondary" style="width:auto;">Cancel</button>
+                    <button id="confirm-dean-approval-btn" class="action-button approve-button" style="width:auto;">Approve</button>
+                </div>
+            </div>
+        </div>
+        <div class="settings-panel">
+            <div class="settings-header">
+                <h3>Settings</h3>
+                <button class="close-settings-btn">&times;</button>
+            </div>
+            <div class="settings-content">
+                <div class="settings-item">
+                    <a href="#" class="profile-link"><span>👤 Profile</span></a>
+                </div>
+                <div class="settings-item">
+                    <a href="#" class="account-settings-link"><span>⚙️ Account Settings</span></a>
+                </div>
+                <div class="settings-item">
+                    <a href="#" class="notifications-link"><span>🔔 Notifications</span></a>
+                </div>
+                 <div class="settings-item">
+                    <a href="#" class="audit-log-link"><span>📜 Audit Log</span></a>
+                </div>
+                <div class="settings-item theme-switch-wrapper">
+                    <span class="theme-text-label">Light Mode <span class="theme-emoji-span">☀️</span></span>
+                    <label class="theme-switch" for="deanThemeToggle"><input type="checkbox" id="deanThemeToggle" class="theme-toggle-input" /><div class="slider"></div></label>
+                </div>
+                <div class="settings-item settings-item-help">
+                    <a href="#"><span>❓ Help</span></a>
+                </div>
+                <div class="settings-item settings-item-logout">
+                     <button class="logout-button settings-logout">⏻ Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Dean of Academics Dashboard -->
+    <div id="doaDashboard" class="dashboard-page">
+        <div class="header">
+             <div class="header-left">
+                <img src="https://i.ibb.co/Y7yC1P8/doa-pic.png" alt="DoA Profile Pic" class="header-profile-pic" id="doa-header-pic">
+                <div>
+                    <h1>Dean of Academics</h1>
+                    <span class="welcome-text" id="doa-welcome-text">Welcome, DoA</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="settings-button">⚙️</button>
+            </div>
+        </div>
+        <div class="nav-bar">
+             <div class="pill-nav-container">
+                 <div class="nav-glider"></div>
+                <nav class="top-nav">
+                    <a href="#doa-home" class="nav-link active">University Overview</a>
+                    <a href="#doa-timetable" class="nav-link">Master Timetable</a>
+                    <a href="#doa-faculty-workload" class="nav-link">Faculty Workload</a>
+                    <a href="#doa-policy" class="nav-link">Policy Management</a>
+                </nav>
+            </div>
+        </div>
+        <div class="content-area">
+            <div id="doa-home-content" class="content-page active">
+                <div class="card">
+                    <h2>University-Wide Progress</h2>
+                    <table id="school-progress-table">
+                        <thead><tr><th>Department / Program</th><th>Head of Department (HoD)</th><th>Approval Status</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="doa-timetable-content" class="content-page">
+                <div class="card">
+                    <h2>University Master Timetable (Optimized)</h2>
+                    <p>This is the final, clash-free schedule for the entire university, ready for final approval.</p>
+                    <div id="doa-timetable-versions"></div>
+                    <p id="no-timetable-message" style="display: none;">No timetable has been sent for approval yet.</p>
+                    <div id="timetable-wrapper" style="display: none;">
+                        <table id="timetable">
+                            <thead></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div class="timetable-actions" style="margin-top: 20px; text-align: right;">
+                        <button id="doa-reject-button" class="action-button reject-button" style="width: auto;">Reject Version</button>
+                        <button id="doa-publish-btn" class="action-button" style="background-color: var(--success-color); width: auto;">Approve & Publish Version</button>
+                    </div>
+                </div>
+            </div>
+             <div id="doa-faculty-workload-content" class="content-page">
+                <div class="card">
+                    <h2>University-Wide Faculty Workload</h2>
+                    <table id="faculty-workload-table">
+                        <thead><tr><th>Faculty</th><th>Department</th><th>Assigned Hours/Week</th><th>Status</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="doa-policy-content" class="content-page">
+                <div class="card">
+                    <h2>University-Wide Academic Policies</h2>
+                    <table id="policy-table">
+                        <thead><tr><th>Policy</th><th>Value</th><th>Status</th></tr></thead>
+                        <tbody>
+                            <tr><td>Max Faculty Workload / Week</td><td>16 Hours</td><td><span class="status active">Active</span></td></tr>
+                            <tr><td>Inter-School Elective Priority</td><td>School of Liberal Arts</td><td><span class="status active">Active</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+         <div id="approval-modal" class="universal-modal">
+            <div class="modal-content">
+                <h3>Confirm Action</h3>
+                <p>Please confirm the final action for this timetable.</p>
+                <div class="modal-buttons">
+                    <button id="cancel-approval-btn" class="action-button btn-secondary" style="width:auto;">Cancel</button>
+                    <button id="final-approve-btn" class="action-button btn-dark" style="width:auto;">Approve</button>
+                    <button id="final-publish-btn" class="action-button btn-success" style="width:auto;">Approve & Publish</button>
+                </div>
+                <p id="approval-feedback" class="feedback-message"></p>
+            </div>
+        </div>
+        <div class="settings-panel">
+            <div class="settings-header">
+                <h3>Settings</h3>
+                <button class="close-settings-btn">&times;</button>
+            </div>
+            <div class="settings-content">
+                 <div class="settings-item">
+                    <a href="#" class="profile-link"><span>👤 Profile</span></a>
+                </div>
+                <div class="settings-item">
+                    <a href="#" class="account-settings-link"><span>⚙️ Account Settings</span></a>
+                </div>
+                <div class="settings-item">
+                    <a href="#" class="notifications-link"><span>🔔 Notifications</span></a>
+                </div>
+                 <div class="settings-item">
+                    <a href="#" class="audit-log-link"><span>📜 Audit Log</span></a>
+                </div>
+                <div class="settings-item theme-switch-wrapper">
+                    <span class="theme-text-label">Light Mode <span class="theme-emoji-span">☀️</span></span>
+                    <label class="theme-switch" for="doaThemeToggle"><input type="checkbox" id="doaThemeToggle" class="theme-toggle-input" /><div class="slider"></div></label>
+                </div>
+                <div class="settings-item settings-item-help">
+                    <a href="#"><span>❓ Help</span></a>
+                </div>
+                <div class="settings-item settings-item-logout">
+                     <button class="logout-button settings-logout">⏻ Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Universal Modals -->
+    <div id="profileModal" class="universal-modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Edit Profile</h2>
+            <form id="profileForm">
+                <label for="profilePhotoInput" class="profile-pic-container" id="profilePicContainer">
+                    <img id="profilePicPreview" src="" alt="Profile Picture Preview" style="display: none;">
+                    <span class="placeholder-text">Click to upload photo</span>
+                </label>
+                <input type="file" id="profilePhotoInput" accept="image/*">
+                
+                <div class="form-group">
+                    <label for="profileName">Full Name</label>
+                    <input type="text" id="profileName" placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <label for="profileEmail">Email Address</label>
+                    <input type="email" id="profileEmail" placeholder="Enter your email">
+                </div>
+                <button type="submit" id="save-profile-btn" class="action-button">Save Changes</button>
+                <p id="profile-save-feedback" class="feedback-message">Changes saved successfully!</p>
+            </form>
+        </div>
+    </div>
+
+    <div id="accountSettingsModal" class="universal-modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Account Settings</h2>
+            <div class="settings-option">
+                <span>Change Password</span>
+                <button class="settings-action-btn change-password-btn">Manage</button>
+            </div>
+             <div class="settings-option">
+                <span>2-Factor Authentication</span>
+                <button class="settings-action-btn two-factor-btn">Setup</button>
+            </div>
+            <button class="action-button delete-account-btn">Delete Account</button>
+        </div>
+    </div>
+    
+    <div id="notificationsModal" class="universal-modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Notification Settings</h2>
+            <div class="settings-option">
+                <span>App Notifications</span>
+                <label class="theme-switch"><input type="checkbox" id="app-notifications-toggle" /><div class="slider"></div></label>
+            </div>
+            <div class="settings-option">
+                <span>Email Notifications</span>
+                <label class="theme-switch"><input type="checkbox" id="email-notifications-toggle" /><div class="slider"></div></label>
+            </div>
+        </div>
+    </div>
+
+    <div id="twoFactorAuthModal" class="universal-modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Two-Factor Authentication (2FA)</h2>
+            <p>Add an extra layer of security to your account. When enabled, you'll be required to enter a code from your authenticator app to log in.</p>
+            <div class="settings-option">
+                <span>Enable 2FA</span>
+                <label class="theme-switch"><input type="checkbox" id="twoFactorAuthToggle" /><div class="slider"></div></label>
+            </div>
+        </div>
+    </div>
+    
+    <div id="auditLogModal" class="universal-modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Audit Log</h2>
+            <p>Review recent changes made by administrators and department heads.</p>
+            <table id="auditLogTable">
+                <thead>
+                    <tr>
+                        <th>Date & Time</th>
+                        <th>User & Role</th>
+                        <th>Action</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Log entries will be inserted here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div id="overrideActionModal" class="universal-modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 id="override-modal-title">Override Action</h2>
+            <p id="override-original-action"></p>
+            <form id="overrideOptionsForm">
+                <!-- Dynamic override options will be inserted here -->
+            </form>
+            <button id="confirm-override-btn" class="action-button">Confirm Override</button>
+            <p id="override-feedback" class="feedback-message">Override successful!</p>
+        </div>
+    </div>
+
+    <div id="verificationModal" class="universal-modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Security Verification</h2>
+            <div id="password-verification-step" class="verification-step active">
+                <p>Please enter your password to proceed.</p>
+                <form id="passwordVerificationForm">
+                    <div class="form-group">
+                        <label for="verificationPassword">Password</label>
+                        <input type="password" id="verificationPassword" required>
+                    </div>
+                    <button type="submit" class="action-button">Verify Password</button>
+                </form>
+            </div>
+            <div id="two-factor-verification-step" class="verification-step">
+                <p>Please enter the 6-digit code from your authenticator app.</p>
+                <form id="twoFactorVerificationForm">
+                    <div class="form-group">
+                        <label for="verificationCode">Verification Code</label>
+                        <input type="text" id="verificationCode" maxlength="6" pattern="\d{6}" required>
+                    </div>
+                    <button type="submit" class="action-button">Verify Code</button>
+                </form>
+            </div>
+            <p id="verification-feedback" class="feedback-message error"></p>
+        </div>
+    </div>
+
+
+    <div id="adjustmentModal" class="universal-modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 id="adjustment-modal-title">Make Adjustment</h2>
+             <div class="form-group">
+                <label for="adjustment-type-select">Type of Change</label>
+                <select id="adjustment-type-select">
+                    <option value="">-- Select an action --</option>
+                    <option value="timing">Change Timings</option>
+                    <option value="classroom">Change Classroom</option>
+                    <option value="faculty">Substitute Faculty</option>
+                </select>
+            </div>
+            <div id="adjustment-options-container">
+                <!-- Dynamic options will be loaded here -->
+            </div>
+            <button id="update-schedule-btn" class="action-button" style="margin-top: 20px;">Update Schedule</button>
+            <p id="adjustment-feedback" class="feedback-message">Schedule updated!</p>
+        </div>
+    </div>
+
+    <div id="changePasswordModal" class="universal-modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Change Password</h2>
+            <form id="changePasswordForm">
+                <div class="form-group">
+                    <label for="currentPassword">Current Password</label>
+                    <input type="password" id="currentPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="newPassword">New Password</label>
+                    <input type="password" id="newPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirmNewPassword">Confirm New Password</label>
+                    <input type="password" id="confirmNewPassword" required>
+                </div>
+                <button type="submit" class="action-button">Save New Password</button>
+                <p id="password-feedback" class="feedback-message"></p>
+            </form>
+        </div>
+    </div>
+
+    <div id="deleteAccountModal" class="universal-modal">
+        <div class="modal-content">
+            <h2>Delete Account</h2>
+            <p>Are you sure you want to delete your account? This action is permanent and cannot be undone.</p>
+            <div class="modal-buttons">
+                <button id="cancel-delete-btn" class="action-button">Cancel</button>
+                <button id="confirm-delete-btn" class="action-button">Delete</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="rejectionModal" class="universal-modal">
+        <div class="modal-content">
+             <span class="close-button">&times;</span>
+            <h2>Submit Rejection Reason</h2>
+            <form id="rejectionForm">
+                 <div class="form-group">
+                    <label for="rejectionReasonSelect">Reason for Rejection</label>
+                    <select id="rejectionReasonSelect" required>
+                        <option value="">-- Select a reason --</option>
+                        <option value="Faculty Overload">Faculty Overload</option>
+                        <option value="Classroom Conflict">Classroom Conflict</option>
+                        <option value="Constraint Violation">Constraint Violation</option>
+                        <option value="Other">Other (Specify below)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="rejectionChangesText">Required Changes / Comments</label>
+                    <textarea id="rejectionChangesText" rows="4" placeholder="Please specify the required changes..."></textarea>
+                </div>
+                <button type="submit" class="action-button">Submit Rejection</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="settings-overlay"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // --- GLOBAL DATA ---
+            const schoolsAndDepartments = {
+                "School of Computer Science Engineering & Technology (SCSET)": {
+                    subjects: ["Data Structures", "Algorithms", "Operating Systems", "Database Management", "Computer Networks"],
+                    faculty: ["Dr. Priya Singh", "Dr. Rohan Mehta", "Dr. Sunil Kumar", "Dr. Meera Iyer"],
+                    classrooms: ["C-101", "C-102", "C-103", "C-201", "C-202"]
+                },
+                "School of Law": {
+                    subjects: ["Contract Law", "Criminal Law", "Jurisprudence", "Constitutional Law", "Moot Court"],
+                    faculty: ["Dr. Alok Verma", "Dr. Sunita Reddy", "Dr. K. Singh", "Dr. V. Rao"],
+                    classrooms: ["L-101", "L-102", "Moot Court Hall"]
+                },
+                "School of Liberal Arts": {
+                    subjects: ["Sociology", "Psychology", "Political Science", "History", "Economics"],
+                    faculty: ["Dr. Ananya Sharma", "Dr. Rahul Desai", "Dr. Pooja Mehta"],
+                    classrooms: ["A-301", "A-302", "A-303"]
+                }
+            };
+
+            // --- SAFER LOCALSTORAGE PARSING ---
+            function getFromStorage(key) {
+                try {
+                    const item = localStorage.getItem(key);
+                    return item ? JSON.parse(item) : null;
+                } catch (e) {
+                    console.error(`Error parsing JSON from localStorage for key "${key}":`, e);
+                    localStorage.removeItem(key); // Clear corrupted data
+                    return null;
+                }
+            }
+            
+            // --- GLOBAL UTILITY FUNCTIONS ---
+            function getWorkloadStatus(hours) {
+                if (hours > 12) return '<span class="status over-loaded">Over-loaded</span>';
+                if (hours >= 8) return '<span class="status balanced">Balanced</span>';
+                if (hours > 0) return '<span class="status under-loaded">Under-loaded</span>';
+                return '<span>Not Assigned</span>';
+            }
+
+            // --- GLOBAL & LOGIN MANAGEMENT ---
+            const mainLoginContainer = document.getElementById('mainLoginContainer');
+            const mainLoginForm = document.getElementById('mainLoginForm');
+            const mainErrorMessage = document.getElementById('mainErrorMessage');
+            const roleSelect = document.getElementById('roleSelect');
+            const allDashboards = document.querySelectorAll('.dashboard-page');
+            const allLogoutButtons = document.querySelectorAll('.logout-button');
+            const allThemeToggles = document.querySelectorAll('.theme-toggle-input');
+            const settingsOverlay = document.getElementById('settings-overlay');
+            const allSettingsButtons = document.querySelectorAll('.settings-button');
+            const allCloseSettingsButtons = document.querySelectorAll('.close-settings-btn');
+
+            const credentials = {
+                admin: { email: 'admin@college.edu', password: 'password' },
+                hod: { email: 'hod@college.edu', password: 'password' },
+                dean: { email: 'dean@college.edu', password: 'password' },
+                doa: { email: 'doa@college.edu', password: 'password' }
+            };
+
+            let auditLogData = [];
+
+            function addAuditLog(role, action, type, targetUser = '') {
+                const userEmail = credentials[role.toLowerCase()] ? credentials[role.toLowerCase()].email : `${role.toLowerCase()}@college.edu`;
+
+                const newLog = {
+                    id: auditLogData.length > 0 ? Math.max(...auditLogData.map(l => l.id)) + 1 : 1,
+                    ts: new Date().toISOString().slice(0, 16).replace('T', ' '),
+                    user: userEmail,
+                    role: role,
+                    action: action,
+                    type: type,
+                    status: 'Active',
+                    targetUser: targetUser
+                };
+                auditLogData.push(newLog);
+                localStorage.setItem('auditLogData', JSON.stringify(auditLogData));
+            }
+
+            function loadAuditLog() {
+                const savedLog = getFromStorage('auditLogData');
+                if (savedLog && Array.isArray(savedLog)) {
+                    auditLogData = savedLog;
+                } else {
+                    auditLogData = [
+                         { id: 1, ts: '2025-07-22 14:30', user: 'admin@college.edu', role: 'Admin', action: 'System Initialized', type: 'system', status: 'Active', targetUser:'' },
+                    ];
+                }
+            }
+
+            // Prefill email based on role selection for demo purposes
+            roleSelect.addEventListener('change', () => {
+                const role = roleSelect.value;
+                const emailInput = document.getElementById('mainEmail');
+                if (credentials[role]) {
+                    emailInput.value = credentials[role].email;
+                } else {
+                    emailInput.value = '';
+                }
+            });
+
+            // Handle main login
+            mainLoginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                mainErrorMessage.style.display = 'none';
+                const role = roleSelect.value;
+                const email = document.getElementById('mainEmail').value;
+                const password = document.getElementById('mainPassword').value;
+
+                if (credentials[role] && credentials[role].email === email && credentials[role].password === password) {
+                    mainLoginContainer.style.display = 'none';
+                    let targetDashboard;
+                    if(role === 'admin') targetDashboard = document.getElementById('adminDashboard');
+                    if(role === 'hod') targetDashboard = document.getElementById('hodDashboard');
+                    if(role === 'dean') targetDashboard = document.getElementById('deanDashboard');
+                    if(role === 'doa') targetDashboard = document.getElementById('doaDashboard');
+                    
+                    if(targetDashboard) {
+                        targetDashboard.style.display = 'flex';
+                        // Initialize the specific dashboard's JS
+                        if(role === 'admin') initializeAdminDashboard();
+                        if(role === 'hod') initializeHodDashboard();
+                        if(role === 'dean') initializeDeanDashboard();
+                        if(role === 'doa') initializeDoaDashboard();
+                    }
+
+                } else {
+                    mainErrorMessage.style.display = 'block';
+                }
+            });
+            
+            function performLogout() {
+                allDashboards.forEach(dashboard => dashboard.style.display = 'none');
+                mainLoginContainer.style.display = 'flex';
+                mainLoginForm.reset();
+                document.getElementById('mainEmail').value = 'admin@college.edu';
+                closeAllModals();
+                closeAllSettingsPanels();
+            }
+
+            allLogoutButtons.forEach(button => {
+                button.addEventListener('click', performLogout);
+            });
+
+            function setTheme(theme, isInitial = false) {
+                document.body.classList.toggle('dark-mode', theme === 'dark');
+                allThemeToggles.forEach(toggle => toggle.checked = (theme === 'dark'));
+                const allThemeTextLabels = document.querySelectorAll('.theme-text-label');
+                const newText = theme === 'dark' ? 'Dark Mode' : 'Light Mode';
+                const newEmoji = theme === 'dark' ? '🌙' : '☀️';
+                allThemeTextLabels.forEach(label => {
+                    const emojiSpan = label.querySelector('.theme-emoji-span');
+                    if(emojiSpan){
+                        label.childNodes[0].nodeValue = newText + ' ';
+                        emojiSpan.textContent = newEmoji;
+                    }
+                });
+                if (!isInitial) {
+                    localStorage.setItem('theme', theme);
+                }
+            }
+
+            allThemeToggles.forEach(toggle => {
+                toggle.addEventListener('change', (e) => {
+                    setTheme(e.target.checked ? 'dark' : 'light');
+                });
+            });
+            
+            function closeAllSettingsPanels() {
+                document.querySelectorAll('.settings-panel.open').forEach(panel => {
+                    panel.classList.remove('open');
+                });
+                settingsOverlay.classList.remove('show');
+            }
+
+            allSettingsButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const parentDashboard = button.closest('.dashboard-page');
+                    const settingsPanel = parentDashboard.querySelector('.settings-panel');
+                    if (settingsPanel) {
+                        settingsPanel.classList.add('open');
+                        settingsOverlay.classList.add('show');
+                    }
+                });
+            });
+
+            allCloseSettingsButtons.forEach(button => {
+                button.addEventListener('click', closeAllSettingsPanels);
+            });
+
+            settingsOverlay.addEventListener('click', closeAllSettingsPanels);
+
+            const allModals = document.querySelectorAll('.universal-modal');
+            
+            function closeAllModals() {
+                allModals.forEach(modal => modal.classList.remove('show'));
+            }
+
+            function openModal(modalElement) {
+                const feedback = modalElement.querySelector('#approval-feedback');
+                if (feedback) {
+                    feedback.textContent = '';
+                    feedback.style.color = '';
+                }
+                modalElement.classList.add('show');
+            }
+            
+            allModals.forEach(modal => {
+                const closeBtn = modal.querySelector('.close-button');
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', closeAllModals);
+                }
+                modal.addEventListener('click', e => {
+                    if (e.target === modal) {
+                        closeAllModals();
+                    }
+                });
+            });
+
+            const profileModal = document.getElementById('profileModal');
+            const profileForm = document.getElementById('profileForm');
+            const profileNameInput = document.getElementById('profileName');
+            const profileEmailInput = document.getElementById('profileEmail');
+            const profilePhotoInput = document.getElementById('profilePhotoInput');
+            const profilePicContainer = document.getElementById('profilePicContainer');
+            const profilePicPreview = document.getElementById('profilePicPreview');
+            const profileSaveFeedback = document.getElementById('profile-save-feedback');
+            const allProfileLinks = document.querySelectorAll('.profile-link');
+            
+            allProfileLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    closeAllSettingsPanels();
+                    const savedProfile = getFromStorage('userProfile') || {};
+                    profileNameInput.value = savedProfile.name || '';
+                    profileEmailInput.value = savedProfile.email || '';
+                    if (savedProfile.photo) {
+                        profilePicPreview.src = savedProfile.photo;
+                        profilePicPreview.style.display = 'block';
+                        profilePicContainer.querySelector('.placeholder-text').style.display = 'none';
+                    } else {
+                        profilePicPreview.style.display = 'none';
+                        profilePicContainer.querySelector('.placeholder-text').style.display = 'block';
+                    }
+                    profileModal.classList.add('show');
+                });
+            });
+
+            profilePhotoInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        profilePicPreview.src = e.target.result;
+                        profilePicPreview.style.display = 'block';
+                        profilePicContainer.querySelector('.placeholder-text').style.display = 'none';
+                    }
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+
+            function updateHeaderInfo(role, profileData) {
+                const defaults = { admin: "Admin", hod: "HoD", dean: "Dean", doa: "Dean of Academics"};
+                const colors = { admin: "367BEC", hod: "1abc9c", dean: "4A90E2", doa: "673AB7"};
+                const welcomeEl = document.getElementById(`${role}-welcome-text`);
+                const picEl = document.getElementById(`${role}-header-pic`);
+
+                if (welcomeEl) welcomeEl.textContent = `Welcome, ${profileData.name || defaults[role]}`;
+
+                if (picEl) {
+                    if (profileData.photo) {
+                        picEl.src = profileData.photo;
+                    } else {
+                        const initial = (profileData.name || defaults[role]).charAt(0).toUpperCase();
+                        picEl.src = `https://placehold.co/40x40/${colors[role]}/FFFFFF?text=${initial}`;
+                    }
+                }
+            }
+
+            profileForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const profileData = { name: profileNameInput.value, email: profileEmailInput.value, photo: profilePicPreview.style.display !== 'none' ? profilePicPreview.src : null };
+                localStorage.setItem('userProfile', JSON.stringify(profileData));
+                
+                const activeDashboardId = document.querySelector('.dashboard-page[style*="flex"]').id;
+                const role = activeDashboardId.replace('Dashboard', '');
+                updateHeaderInfo(role, profileData);
+
+                profileSaveFeedback.style.opacity = '1';
+                setTimeout(() => { profileSaveFeedback.style.opacity = '0'; closeAllModals(); }, 1500);
+            });
+
+            const accountSettingsModal = document.getElementById('accountSettingsModal');
+            const changePasswordModal = document.getElementById('changePasswordModal');
+            const deleteAccountModal = document.getElementById('deleteAccountModal');
+            const notificationsModal = document.getElementById('notificationsModal');
+            const twoFactorAuthModal = document.getElementById('twoFactorAuthModal');
+            const auditLogModal = document.getElementById('auditLogModal');
+            const overrideActionModal = document.getElementById('overrideActionModal');
+            const verificationModal = document.getElementById('verificationModal');
+            const rejectionModal = document.getElementById('rejectionModal');
+            
+            const allAccountSettingsLinks = document.querySelectorAll('.account-settings-link');
+            const allNotificationsLinks = document.querySelectorAll('.notifications-link');
+            const allAuditLogLinks = document.querySelectorAll('.audit-log-link');
+            const changePasswordBtns = document.querySelectorAll('.change-password-btn');
+            const twoFactorBtns = document.querySelectorAll('.two-factor-btn');
+            
+            const changePasswordForm = document.getElementById('changePasswordForm');
+            const passwordFeedback = document.getElementById('password-feedback');
+            const deleteAccountBtns = document.querySelectorAll('.delete-account-btn');
+            const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+            const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
+
+            const appNotificationsToggle = document.getElementById('app-notifications-toggle');
+            const emailNotificationsToggle = document.getElementById('email-notifications-toggle');
+            const twoFactorAuthToggle = document.getElementById('twoFactorAuthToggle');
+            const rejectionForm = document.getElementById('rejectionForm');
+            
+            allAccountSettingsLinks.forEach(link => {
+                link.addEventListener('click', e => {
+                    e.preventDefault();
+                    closeAllSettingsPanels();
+                    accountSettingsModal.classList.add('show');
+                });
+            });
+            
+            allNotificationsLinks.forEach(link => {
+                link.addEventListener('click', e => {
+                    e.preventDefault();
+                    closeAllSettingsPanels();
+                    appNotificationsToggle.checked = getFromStorage('appNotificationsEnabled') ?? true;
+                    emailNotificationsToggle.checked = getFromStorage('emailNotificationsEnabled') ?? true;
+                    notificationsModal.classList.add('show');
+                });
+            });
+
+            changePasswordBtns.forEach(btn => btn.addEventListener('click', () => {
+                accountSettingsModal.classList.remove('show');
+                changePasswordModal.classList.add('show');
+            }));
+
+            twoFactorBtns.forEach(btn => btn.addEventListener('click', () => {
+                accountSettingsModal.classList.remove('show');
+                twoFactorAuthToggle.checked = getFromStorage('2fa_enabled') || false;
+                twoFactorAuthModal.classList.add('show');
+            }));
+            
+            changePasswordForm.addEventListener('submit', e => {
+                e.preventDefault();
+                const newPass = document.getElementById('newPassword').value;
+                const confirmPass = document.getElementById('confirmNewPassword').value;
+                passwordFeedback.classList.remove('error', 'success');
+                if (newPass !== confirmPass) {
+                    passwordFeedback.textContent = 'New passwords do not match!';
+                    passwordFeedback.classList.add('error');
+                } else {
+                    passwordFeedback.textContent = 'Password changed successfully!';
+                    passwordFeedback.classList.add('success');
+                    setTimeout(() => {
+                        closeAllModals(); changePasswordForm.reset(); passwordFeedback.style.opacity = '0';
+                    }, 1500);
+                }
+                passwordFeedback.style.opacity = '1';
+            });
+            
+            deleteAccountBtns.forEach(btn => btn.addEventListener('click', () => {
+                accountSettingsModal.classList.remove('show');
+                deleteAccountModal.classList.add('show');
+            }));
+            
+            cancelDeleteBtn.addEventListener('click', () => {
+                deleteAccountModal.classList.remove('show');
+                accountSettingsModal.classList.add('show');
+            });
+            
+            confirmDeleteBtn.addEventListener('click', () => {
+                performLogout();
+            });
+
+            appNotificationsToggle.addEventListener('change', e => localStorage.setItem('appNotificationsEnabled', e.target.checked));
+            emailNotificationsToggle.addEventListener('change', e => localStorage.setItem('emailNotificationsEnabled', e.target.checked));
+            twoFactorAuthToggle.addEventListener('change', e => {
+                localStorage.setItem('2fa_enabled', JSON.stringify(e.target.checked));
+            });
+            
+            rejectionForm.addEventListener('submit', e => {
+                e.preventDefault();
+                const sourceDashboard = rejectionModal.dataset.source;
+                const reason = document.getElementById('rejectionReasonSelect').value;
+                const comments = document.getElementById('rejectionChangesText').value;
+                let logMessage = `Rejected timetable. Reason: ${reason}`;
+                if (comments) logMessage += ` - Comments: ${comments}`;
+
+                let rejectBtn, approveBtn;
+
+                if (sourceDashboard === 'dean') {
+                    addAuditLog('Dean', logMessage, 'timetable_rejected');
+                    rejectBtn = document.getElementById('dean-reject-button');
+                    approveBtn = document.getElementById('dean-approve-button');
+                } else if (sourceDashboard === 'doa') {
+                    const activeVersionBtn = document.querySelector('#doaDashboard .version-btn.active');
+                    const versionIndex = activeVersionBtn ? parseInt(activeVersionBtn.dataset.version, 10) + 1 : 'N/A';
+                    logMessage = `Rejected Timetable Version ${versionIndex}. Reason: ${reason}`;
+                    if (comments) logMessage += ` - Comments: ${comments}`;
+                    addAuditLog('DoA', logMessage, 'timetable_rejected');
+                    rejectBtn = document.getElementById('doa-reject-button');
+                    approveBtn = document.getElementById('doa-publish-btn');
+                }
+
+                if (rejectBtn && approveBtn) {
+                    rejectBtn.textContent = '❌ Rejected';
+                    rejectBtn.disabled = true;
+                    approveBtn.disabled = true;
+                }
+                
+                closeAllModals();
+            });
+
+            const overrideOptionsForm = document.getElementById('overrideOptionsForm');
+            const confirmOverrideBtn = document.getElementById('confirm-override-btn');
+            let currentOverrideLog = null;
+            let currentOverrideAction = null;
+            let verificationSuccessCallback = null;
+
+            function renderAuditLog(logs) {
+                const tableBody = document.querySelector('#auditLogTable tbody');
+                tableBody.innerHTML = '';
+                logs.forEach(log => {
+                    const row = tableBody.insertRow();
+                    const overridden = log.status === 'Overridden';
+                    row.innerHTML = `
+                        <td>${log.ts}</td>
+                        <td>${log.user} (${log.role})</td>
+                        <td>${log.action}</td>
+                        <td>
+                            ${overridden ? 'Overridden' : `<button class="override-btn" data-log-id="${log.id}">Override</button>`}
+                        </td>
+                    `;
+                });
+            }
+
+            allAuditLogLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    closeAllSettingsPanels();
+                    
+                    let logsToRender = [...auditLogData].sort((a, b) => new Date(b.ts) - new Date(a.ts));
+                    renderAuditLog(logsToRender);
+                    auditLogModal.classList.add('show');
+                });
+            });
+
+            document.getElementById('auditLogTable').addEventListener('click', e => {
+                if(e.target.classList.contains('override-btn')) {
+                    const logId = parseInt(e.target.dataset.logId, 10);
+                    currentOverrideLog = auditLogData.find(item => item.id === logId);
+                    if (currentOverrideLog) {
+                        auditLogModal.classList.remove('show');
+                        setupOverrideModal(currentOverrideLog);
+                        overrideActionModal.classList.add('show');
+                    }
+                }
+            });
+
+            function setupOverrideModal(log) {
+                document.getElementById('override-modal-title').textContent = `Override Action: #${log.id}`;
+                document.getElementById('override-original-action').textContent = `Original Action: "${log.action}"`;
+                overrideOptionsForm.innerHTML = '';
+                
+                const activeDashboardId = document.querySelector('.dashboard-page[style*="flex"]').id;
+                const currentUserRole = activeDashboardId.replace('Dashboard', '');
+
+                if (log.type === 'user_add') {
+                    let designationOptions = '';
+                    if (currentUserRole === 'doa') {
+                        designationOptions = `<option value="HoD">HoD (Head of Department)</option><option value="Dean">Dean (School)</option>`;
+                    } else if (currentUserRole === 'dean') {
+                        designationOptions = `<option value="HoD">HoD (Head of Department)</option>`;
+                    }
+
+                    overrideOptionsForm.innerHTML = `
+                        <p>Select an override action for adding user ${log.targetUser}:</p>
+                        <div class="form-group">
+                            <label for="overrideActionSelect">Action</label>
+                            <select id="overrideActionSelect">
+                                <option value="remove_user">Remove User</option>
+                                <option value="change_designation">Change Designation</option>
+                            </select>
+                        </div>
+                        <div id="designation-details-group" style="display:none;">
+                            <div class="form-group">
+                                 <label for="newDesignationSelect">New Designation</label>
+                                 <select id="newDesignationSelect">${designationOptions}</select>
+                            </div>
+                            <div class="form-group" id="school-assignment-group">
+                                <label for="schoolAssignmentSelect">Assign to School</label>
+                                <select id="schoolAssignmentSelect"></select>
+                            </div>
+                            <div class="form-group" id="department-assignment-group" style="display:none;">
+                                <label for="departmentAssignmentSelect">Assign to Department</label>
+                                <select id="departmentAssignmentSelect"></select>
+                            </div>
+                        </div>
+                    `;
+                    const schoolSelect = document.getElementById('schoolAssignmentSelect');
+                    schoolSelect.innerHTML = '<option value="">-- Select a School --</option>';
+                    for (const school in schoolsAndDepartments) { schoolSelect.innerHTML += `<option value="${school}">${school}</option>`; }
+
+                    const overrideActionSelect = document.getElementById('overrideActionSelect');
+                    const designationDetailsGroup = document.getElementById('designation-details-group');
+                    const newDesignationSelect = document.getElementById('newDesignationSelect');
+                    
+                    overrideActionSelect.addEventListener('change', e => {
+                        const showDetails = e.target.value === 'change_designation';
+                        designationDetailsGroup.style.display = showDetails ? 'block' : 'none';
+                        if (showDetails) { newDesignationSelect.dispatchEvent(new Event('change')); }
+                    });
+                    
+                    if (newDesignationSelect) {
+                        const departmentGroup = document.getElementById('department-assignment-group');
+                        const schoolAssignmentSelect = document.getElementById('schoolAssignmentSelect');
+                        
+                        newDesignationSelect.addEventListener('change', e => {
+                            const isHod = e.target.value === 'HoD';
+                            departmentGroup.style.display = isHod ? 'block' : 'none';
+                             if (isHod) { populateDepartmentsForOverride(schoolAssignmentSelect.value); }
+                        });
+
+                        schoolAssignmentSelect.addEventListener('change', e => {
+                            if (newDesignationSelect.value === 'HoD') { populateDepartmentsForOverride(e.target.value); }
+                        });
+                    }
+
+                    function populateDepartmentsForOverride(school) {
+                        const departmentAssignmentSelect = document.getElementById('departmentAssignmentSelect');
+                        departmentAssignmentSelect.innerHTML = '<option value="">-- Select a Department --</option>';
+                        if (school && schoolsAndDepartments[school]) {
+                            schoolsAndDepartments[school].subjects.forEach(dept => { departmentAssignmentSelect.innerHTML += `<option value="${dept}">${dept}</option>`; });
+                        }
+                    }
+                } else {
+                     overrideOptionsForm.innerHTML = `<p>You are about to revert this action. This is the only available override.</p><input type="hidden" id="overrideActionSelect" value="revert">`;
+                }
+            }
+            
+            confirmOverrideBtn.addEventListener('click', () => {
+                const actionSelect = document.getElementById('overrideActionSelect');
+                if (actionSelect) {
+                    currentOverrideAction = { type: actionSelect.value };
+                    if(actionSelect.value === 'change_designation') {
+                        const newDesignation = document.getElementById('newDesignationSelect').value;
+                        const assignedSchool = document.getElementById('schoolAssignmentSelect').value;
+                        currentOverrideAction.newDesignation = newDesignation;
+                        currentOverrideAction.assignedSchool = assignedSchool;
+                        if (newDesignation === 'HoD') {
+                            const assignedDepartment = document.getElementById('departmentAssignmentSelect').value;
+                            currentOverrideAction.assignedDepartment = assignedDepartment;
+                        }
+                    }
+                    overrideActionModal.classList.remove('show');
+                    verificationSuccessCallback = completeOverride;
+                    startVerificationProcess();
+                }
+            });
+
+            const verificationPasswordForm = document.getElementById('passwordVerificationForm');
+            const verificationCodeForm = document.getElementById('twoFactorVerificationForm');
+            const verificationFeedback = document.getElementById('verification-feedback');
+
+            function startVerificationProcess() {
+                verificationFeedback.textContent = '';
+                verificationPasswordForm.reset();
+                verificationCodeForm.reset();
+                document.getElementById('password-verification-step').classList.add('active');
+                document.getElementById('two-factor-verification-step').classList.remove('active');
+                verificationModal.classList.add('show');
+            }
+
+            verificationPasswordForm.addEventListener('submit', e => {
+                e.preventDefault();
+                const pass = document.getElementById('verificationPassword').value;
+                const activeDashboardId = document.querySelector('.dashboard-page[style*="flex"]').id;
+                const role = activeDashboardId.replace('Dashboard', '');
+                
+                if (pass === credentials[role].password) {
+                    verificationFeedback.textContent = '';
+                    const is2faEnabled = getFromStorage('2fa_enabled') || false;
+                    if (is2faEnabled) {
+                        document.getElementById('password-verification-step').classList.remove('active');
+                        document.getElementById('two-factor-verification-step').classList.add('active');
+                    } else {
+                        if (verificationSuccessCallback) {
+                            verificationSuccessCallback();
+                        }
+                    }
+                } else {
+                    verificationFeedback.textContent = 'Incorrect password.';
+                }
+            });
+
+            verificationCodeForm.addEventListener('submit', e => {
+                e.preventDefault();
+                const code = document.getElementById('verificationCode').value;
+                if (code.length === 6 && /^\d+$/.test(code)) {
+                    verificationFeedback.textContent = '';
+                     if (verificationSuccessCallback) {
+                         verificationSuccessCallback();
+                    }
+                } else {
+                    verificationFeedback.textContent = 'Invalid 2FA code.';
+                }
+            });
+
+            function completeOverride() {
+                verificationModal.classList.remove('show');
+                
+                const logToUpdate = auditLogData.find(l => l.id === currentOverrideLog.id);
+                if (logToUpdate) {
+                    logToUpdate.status = 'Overridden';
+                }
+
+                let newActionDescription = `Reverted action: "${currentOverrideLog.action}"`;
+                if(currentOverrideAction.type === 'remove_user') {
+                    newActionDescription = `Removed user (${currentOverrideLog.targetUser}) from log #${currentOverrideLog.id}`;
+                } else if (currentOverrideAction.type === 'change_designation') {
+                    let assignment = currentOverrideAction.assignedSchool;
+                    if (currentOverrideAction.newDesignation === 'HoD' && currentOverrideAction.assignedDepartment) {
+                        assignment = currentOverrideAction.assignedDepartment;
+                    }
+                    newActionDescription = `Changed designation for user (${currentOverrideLog.targetUser}) to ${currentOverrideAction.newDesignation} of ${assignment}`;
+                }
+
+                const activeDashboardId = document.querySelector('.dashboard-page[style*="flex"]').id;
+                const currentUserRole = activeDashboardId.replace('Dashboard', '').charAt(0).toUpperCase() + activeDashboardId.replace('Dashboard', '').slice(1);
+                
+                addAuditLog(currentUserRole, newActionDescription, 'override');
+                
+                currentOverrideLog = null; currentOverrideAction = null; verificationSuccessCallback = null;
+            }
+
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            setTheme(savedTheme, true);
+            loadAuditLog();
+
+            function initializeAdminDashboard() {
+                const dashboard = document.getElementById('adminDashboard');
+                if (dashboard.dataset.initialized) return;
+                dashboard.dataset.initialized = true;
+                
+                let assignedDeans = {}; let assignedHoDs = {}; let assignedDeanOfAcademics = null;
+                const navLinks = dashboard.querySelectorAll('.nav-link');
+                const contentPages = dashboard.querySelectorAll('.content-page');
+                const generateButton = dashboard.querySelector('#generate-button');
+                const generationError = dashboard.querySelector('#generation-error');
+                const addUserForm = dashboard.querySelector('#addUserForm');
+                const userTableBody = dashboard.querySelector('#user-table');
+                const userRoleSelect = dashboard.querySelector('#userRole');
+                const schoolGroup = dashboard.querySelector('#school-group');
+                const userSchoolSelect = dashboard.querySelector('#userSchool');
+                const departmentGroup = dashboard.querySelector('#department-group');
+                const userDepartmentSelect = dashboard.querySelector('#userDepartment');
+                const formError = dashboard.querySelector('#form-error');
+                const inviteAllButton = dashboard.querySelector('#invite-all-button');
+                const constraintsModal = dashboard.querySelector('#constraintsModal');
+                const updateConstraintsBtn = dashboard.querySelector('#update-constraints-btn');
+                const closeModalBtn = constraintsModal.querySelector('.close-button');
+                const constraintsForm = dashboard.querySelector('#constraintsForm');
+                const viewStartTime = dashboard.querySelector('#viewStartTime');
+                const viewEndTime = dashboard.querySelector('#viewEndTime');
+                const viewLunchStart = dashboard.querySelector('#viewLunchStart');
+                const viewLunchEnd = dashboard.querySelector('#viewLunchEnd');
+                const viewMaxLectures = dashboard.querySelector('#viewMaxLectures');
+                const viewMaxBatches = dashboard.querySelector('#viewMaxBatches');
+                const startTimeInput = dashboard.querySelector('#startTime');
+                const endTimeInput = dashboard.querySelector('#endTime');
+                const lunchStartInput = dashboard.querySelector('#lunchStart');
+                const lunchEndInput = dashboard.querySelector('#lunchEnd');
+                const maxLecturesInput = dashboard.querySelector('#maxLectures');
+                const maxBatchesInput = dashboard.querySelector('#maxBatches');
+                const uploadButtons = dashboard.querySelectorAll('.upload-button');
+
+                
+                function updateGlider(dashboardEl) {
+                    const activeLink = dashboardEl.querySelector('.nav-link.active');
+                    const gliderEl = dashboardEl.querySelector('.nav-glider');
+                    if (activeLink && gliderEl) {
+                        gliderEl.style.width = `${activeLink.offsetWidth}px`;
+                        gliderEl.style.left = `${activeLink.offsetLeft}px`;
+                    }
+                }
+
+
+                function populateSchools() {
+                    userSchoolSelect.innerHTML = '<option value="">--Select a School--</option>';
+                    const availableSchools = Object.keys(schoolsAndDepartments).filter(school => !assignedDeans[school]);
+                    availableSchools.forEach(school => userSchoolSelect.innerHTML += `<option value="${school}">${school}</option>`);
+                }
+                function populateDepartments(school) {
+                    userDepartmentSelect.innerHTML = '<option value="">--Select a Department--</option>';
+                    if (school && schoolsAndDepartments[school]) {
+                        const availableDepts = schoolsAndDepartments[school].subjects.filter(dept => !assignedHoDs[dept]);
+                        availableDepts.forEach(dept => userDepartmentSelect.innerHTML += `<option value="${dept}">${dept}</option>`);
+                    }
+                }
+                function handleRoleChange() {
+                    if (!userRoleSelect) return;
+                    formError.style.display = 'none';
+                    const role = userRoleSelect.value;
+                    schoolGroup.style.display = (role === 'Dean' || role === 'HoD') ? 'block' : 'none';
+                    departmentGroup.style.display = role === 'HoD' ? 'block' : 'none';
+                    if (role === 'Dean' || role === 'HoD') populateSchools();
+                    if (role === 'HoD') populateDepartments(userSchoolSelect.value);
+                }
+                function triggerInvite(button) {
+                    if (button.disabled) return;
+                    button.disabled = true;
+                    button.textContent = 'Invited...';
+                    setTimeout(() => {
+                        button.textContent = '✅ Joined';
+                        button.classList.add('joined');
+                        const removeBtn = document.createElement('button');
+                        removeBtn.className = 'remove-button';
+                        removeBtn.textContent = '❌';
+                        button.parentNode.appendChild(removeBtn);
+                    }, 2000);
+                }
+                function loadSavedConstraints() {
+                    const constraints = getFromStorage('constraints') || {
+                        startTime: '09:00', endTime: '17:00', lunchStart: '13:00', lunchEnd: '14:00', maxLectures: '3', maxBatches: '4'
+                    };
+                    viewStartTime.textContent = constraints.startTime;
+                    viewEndTime.textContent = constraints.endTime;
+                    viewLunchStart.textContent = constraints.lunchStart;
+                    viewLunchEnd.textContent = constraints.lunchEnd;
+                    viewMaxLectures.textContent = constraints.maxLectures;
+                    viewMaxBatches.textContent = constraints.maxBatches;
+                    startTimeInput.value = constraints.startTime;
+                    endTimeInput.value = constraints.endTime;
+                    lunchStartInput.value = constraints.lunchStart;
+                    lunchEndInput.value = constraints.lunchEnd;
+                    maxLecturesInput.value = constraints.maxLectures;
+                    maxBatchesInput.value = constraints.maxBatches;
+                }
+
+                navLinks.forEach(link => {
+                    link.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        navLinks.forEach(nav => nav.classList.remove('active'));
+                        this.classList.add('active');
+                        updateGlider(dashboard);
+                        const targetId = this.getAttribute('href').substring(1) + '-content';
+                        contentPages.forEach(page => {
+                            page.classList.remove('active');
+                        });
+                        dashboard.querySelector('#' + targetId).classList.add('active');
+                    });
+                });
+                
+                function generateTimetables() {
+                    const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+                    const timeSlots = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-13:00", "14:00-15:00", "15:00-16:00", "16:00-17:00"];
+                    
+                    const classroomsData = getFromStorage('classroomData') || [];
+                    const assignments = getFromStorage('hodAssignments') || [];
+
+                    let classrooms = [];
+                    if (classroomsData.length > 0) {
+                        const firstClassroom = classroomsData[0];
+                        let roomKey = Object.keys(firstClassroom).find(key => 
+                            key.toLowerCase().includes('name') || 
+                            key.toLowerCase().includes('room')
+                        ) || Object.keys(firstClassroom)[0];
+                        
+                        if (roomKey) {
+                            classrooms = classroomsData.map(c => c[roomKey]).filter(Boolean);
+                        }
+                    }
+
+                    if(classrooms.length === 0 || assignments.length === 0){
+                        generationError.textContent = 'Error: Missing or invalid Classroom data or HoD assignments.';
+                        generationError.style.display = 'block';
+                        return null;
+                    }
+
+                    let timetables = [];
+                    for(let v = 0; v < 4; v++) {
+                        let timetable = {};
+                        let occupied = {};
+
+                        days.forEach(day => {
+                            timetable[day] = {};
+                            occupied[day] = {};
+                            timeSlots.forEach(slot => {
+                                timetable[day][slot] = [];
+                                occupied[day][slot] = { teachers: [], rooms: [], batches: [] };
+                            });
+                        });
+                        
+                        let allClassSlots = [];
+                        assignments.forEach(assignment => {
+                            for(let i=0; i<assignment.classesPerWeek; i++){
+                                allClassSlots.push({ ...assignment, id: `${assignment.batches.join('_')}_${i}` });
+                            }
+                        });
+
+                        let shuffledClassSlots = allClassSlots.sort(() => 0.5 - Math.random());
+                        
+                        for(const classSlot of shuffledClassSlots) {
+                            let placed = false;
+                            let attempts = 0;
+                            while(!placed && attempts < 500) { 
+                                let day = days[Math.floor(Math.random() * days.length)];
+                                let slot = timeSlots[Math.floor(Math.random() * timeSlots.length)];
+                                let room = classrooms[Math.floor(Math.random() * classrooms.length)];
+
+                                const teacherIsFree = !occupied[day][slot].teachers.includes(classSlot.facultyName);
+                                const roomIsFree = !occupied[day][slot].rooms.includes(room);
+                                const batchesAreFree = !classSlot.batches.some(batch => occupied[day][slot].batches.includes(batch));
+
+                                if (teacherIsFree && roomIsFree && batchesAreFree) {
+                                    timetable[day][slot].push({ 
+                                        subject: `${classSlot.batches.join(', ')}`, 
+                                        teacher: classSlot.facultyName, 
+                                        room: room 
+                                    });
+                                    occupied[day][slot].teachers.push(classSlot.facultyName);
+                                    occupied[day][slot].rooms.push(room);
+                                    classSlot.batches.forEach(batch => occupied[day][slot].batches.push(batch));
+                                    placed = true;
+                                }
+                                attempts++;
+                            }
+                        }
+                        timetables.push(timetable);
+                    }
+                    generationError.style.display = 'none';
+                    return {timetables, timeSlots};
+                }
+
+                
+                function displayTimetable(timetable, timeSlots) {
+                    const tableHead = dashboard.querySelector('#generated-timetable thead');
+                    const tableBody = dashboard.querySelector('#generated-timetable tbody');
+                    tableHead.innerHTML = '<tr><th>Time</th><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th></tr>';
+                    tableBody.innerHTML = '';
+
+                    timeSlots.forEach(slot => {
+                        const row = tableBody.insertRow();
+                        row.innerHTML = `<th>${slot}</th>` + ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].map(day => {
+                            let cellContent = timetable[day][slot].map(c => 
+                                `<div class="class-entry" style="border-left-color: var(--primary-color); background: var(--nav-link-hover);"><strong>${c.subject}</strong><span>${c.teacher}</span><span>${c.room}</span></div>`
+                            ).join('');
+                            return `<td>${cellContent}</td>`;
+                        }).join('');
+                    });
+                }
+
+
+                generateButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    
+                    const generatedData = generateTimetables();
+                    if (!generatedData) return;
+
+                    const {timetables, timeSlots} = generatedData;
+                    window.generatedTimetables = timetables;
+                    
+                    const versionsContainer = dashboard.querySelector('#timetable-versions');
+                    versionsContainer.innerHTML = '';
+                    timetables.forEach((_, i) => {
+                        versionsContainer.innerHTML += `<button class="version-btn ${i === 0 ? 'active' : ''}" data-version="${i}">Version ${i + 1}</button>`;
+                    });
+                    
+                    versionsContainer.addEventListener('click', e => {
+                        if (e.target.classList.contains('version-btn')) {
+                            versionsContainer.querySelectorAll('.version-btn').forEach(btn => btn.classList.remove('active'));
+                            e.target.classList.add('active');
+                            const versionIndex = parseInt(e.target.dataset.version);
+                            displayTimetable(window.generatedTimetables[versionIndex], timeSlots);
+                        }
+                    });
+
+                    displayTimetable(timetables[0], timeSlots);
+                    
+                    dashboard.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                    const timetablesLink = Array.from(navLinks).find(link => link.getAttribute('href') === '#timetables');
+                    if (timetablesLink) {
+                        timetablesLink.classList.add('active');
+                        updateGlider(dashboard);
+                        dashboard.querySelectorAll('.content-page').forEach(p => p.classList.remove('active'));
+                        dashboard.querySelector('#timetables-content').classList.add('active');
+                    }
+                });
+
+                updateConstraintsBtn.addEventListener('click', () => { constraintsModal.classList.add('show'); });
+                closeModalBtn.addEventListener('click', () => { constraintsModal.classList.remove('show'); });
+                constraintsModal.addEventListener('click', (event) => { if (event.target === constraintsModal) { constraintsModal.classList.remove('show'); } });
+                constraintsForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const newConstraints = {
+                        startTime: startTimeInput.value, endTime: endTimeInput.value,
+                        lunchStart: lunchStartInput.value, lunchEnd: lunchEndInput.value,
+                        maxLectures: maxLecturesInput.value,
+                        maxBatches: maxBatchesInput.value
+                    };
+                    localStorage.setItem('constraints', JSON.stringify(newConstraints));
+                    addAuditLog('Admin', 'Updated scheduling constraints', 'constraint_change');
+                    loadSavedConstraints();
+                    constraintsModal.classList.remove('show');
+                });
+                userRoleSelect.addEventListener('change', handleRoleChange);
+                userSchoolSelect.addEventListener('change', () => { if (userRoleSelect.value === 'HoD') populateDepartments(userSchoolSelect.value); });
+                addUserForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    formError.style.display = 'none';
+                    const userName = dashboard.querySelector('#userName').value;
+                    const userEmail = dashboard.querySelector('#userEmail').value;
+                    const userRole = userRoleSelect.value;
+                    const userSchool = userSchoolSelect.value;
+                    const userDepartment = userDepartmentSelect.value;
+                    if (!userRole || (userRole !== 'Dean of Academics' && !userSchool) || (userRole === 'HoD' && !userDepartment)) {
+                        formError.textContent = "Please fill all required fields."; formError.style.display = 'block'; return;
+                    }
+                    let roleDisplay = '';
+                    if (userRole === 'Dean of Academics') {
+                        if (assignedDeanOfAcademics) { formError.textContent = "A Dean of Academics has already been assigned."; formError.style.display = 'block'; return; }
+                        assignedDeanOfAcademics = userEmail; roleDisplay = "Dean of Academics";
+                    } else if (userRole === 'Dean') {
+                        assignedDeans[userSchool] = userEmail; roleDisplay = `Dean (${userSchool})`;
+                    } else if (userRole === 'HoD') {
+                        assignedHoDs[userDepartment] = userEmail; roleDisplay = `HoD (${userDepartment})`;
+                    }
+                    addAuditLog('Admin', `Added new user: ${userEmail} with role: ${roleDisplay}`, 'user_add', userEmail);
+                    const newRow = userTableBody.insertRow();
+                    newRow.dataset.role = userRole; newRow.dataset.school = userSchool; newRow.dataset.department = userDepartment;
+                    newRow.innerHTML = `<td>${userName}</td><td>${userEmail}</td><td>${roleDisplay}</td><td><button class="invite-button">Invite</button></td>`;
+                    addUserForm.reset(); handleRoleChange();
+                });
+                userTableBody.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('invite-button')) triggerInvite(e.target);
+                    if (e.target.classList.contains('remove-button')) {
+                        const row = e.target.closest('tr');
+                        const role = row.dataset.role;
+                        if (role === 'Dean of Academics') assignedDeanOfAcademics = null;
+                        if (role === 'Dean') delete assignedDeans[row.dataset.school];
+                        if (role === 'HoD') delete assignedHoDs[row.dataset.department];
+                        row.remove(); handleRoleChange();
+                    }
+                });
+                inviteAllButton.addEventListener('click', () => userTableBody.querySelectorAll('.invite-button:not(:disabled)').forEach(triggerInvite));
+                
+                uploadButtons.forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const type = e.target.dataset.type;
+                        const fileInput = document.getElementById(`${type}-file`);
+                        const feedbackEl = document.getElementById(`${type}-upload-feedback`);
+
+                        if (fileInput.files.length === 0) {
+                            return;
+                        }
+
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            const csvData = event.target.result;
+                            const lines = csvData.split('\n').filter(line => line.trim() !== '');
+                            const headers = lines[0].split(',').map(h => h.trim());
+                            const data = lines.slice(1).map(line => {
+                                const values = line.split(',').map(v => v.trim());
+                                let obj = {};
+                                headers.forEach((header, i) => {
+                                    obj[header] = values[i];
+                                });
+                                return obj;
+                            });
+
+                            if (type === 'student') {
+                                const numBatches = 25;
+                                const batches = Array.from({ length: numBatches }, (_, i) => `Batch ${i + 1}`);
+                                localStorage.setItem('studentBatches', JSON.stringify(batches));
+                            } else if (type === 'faculty') {
+                                localStorage.setItem('facultyData', JSON.stringify(data));
+                            } else if (type === 'classroom') {
+                                localStorage.setItem('classroomData', JSON.stringify(data));
+                            }
+                            
+                            addAuditLog('Admin', `Uploaded ${type} database: ${fileInput.files[0].name}`, `${type}_upload`);
+                            feedbackEl.textContent = '✅ Uploaded successfully!';
+                            setTimeout(() => feedbackEl.textContent = '', 3000);
+                        };
+                        reader.readAsText(fileInput.files[0]);
+                    });
+                });
+
+                document.getElementById('send-for-approval-btn').addEventListener('click', (e) => {
+                    if (window.generatedTimetables && window.generatedTimetables.length > 0) {
+                        const timeSlots = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-13:00", "14:00-15:00", "15:00-16:00", "16:00-17:00"];
+                        localStorage.setItem('timetableForApproval', JSON.stringify({ timetables: window.generatedTimetables, timeSlots: timeSlots }));
+                        
+                        const button = e.target;
+                        button.textContent = '✅ Sent';
+                        button.disabled = true;
+
+                        addAuditLog('Admin', `Sent all 4 timetable versions for approval`, 'timetable_sent');
+                    }
+                });
+
+
+                loadSavedConstraints();
+                handleRoleChange();
+                updateHeaderInfo('admin', getFromStorage('userProfile') || {});
+                setTimeout(() => updateGlider(dashboard), 50);
+            }
+
+            // --- HOD DASHBOARD SCRIPT ---
+            function initializeHodDashboard() {
+                const dashboard = document.getElementById('hodDashboard');
+                if (dashboard.dataset.initialized) return;
+                dashboard.dataset.initialized = true;
+
+                const facultySelect = dashboard.querySelector('#faculty-select');
+                const classesPerWeekSelect = dashboard.querySelector('#classes-per-week');
+                const assignButton = dashboard.querySelector('#assign-button');
+                const assignmentsTableBody = dashboard.querySelector('#assignments-table tbody');
+                const publishButton = dashboard.querySelector('#publish-button');
+                const navLinks = dashboard.querySelectorAll('.nav-link');
+                const contentPages = dashboard.querySelectorAll('.content-page');
+                const workloadTableBody = dashboard.querySelector('#workload-table tbody');
+                const preferencesTableBody = dashboard.querySelector('#preferences-table tbody');
+                const multiSelectContainer = dashboard.querySelector('#batch-multi-select');
+                const pillsContainer = dashboard.querySelector('#pills-container');
+                const batchSearch = dashboard.querySelector('#batch-search');
+                const batchDropdown = dashboard.querySelector('#batch-dropdown');
+                const dailyScheduleTableBody = dashboard.querySelector('#daily-schedule-table tbody');
+                const adjustmentModal = document.getElementById('adjustmentModal');
+                const adjustmentModalTitle = document.getElementById('adjustment-modal-title');
+                const adjustmentTypeSelect = document.getElementById('adjustment-type-select');
+                const adjustmentOptionsContainer = document.getElementById('adjustment-options-container');
+                const updateScheduleBtn = document.getElementById('update-schedule-btn');
+                const adjustmentFeedback = document.getElementById('adjustment-feedback');
+                let currentlyEditingRowIndex = null;
+                
+                let dailyScheduleData = [];
+
+                const allFacultyData = getFromStorage('facultyData') || [];
+                let allFaculty = allFacultyData.slice(0, 7).map((f, i) => ({ 
+                    id: `prof_${i}`, 
+                    name: `${f.first_name || ''} ${f.last_name || ''}`.trim(), 
+                    assignedHours: 0, 
+                    preferenceStatus: (i % 2 === 0) ? 'Pending' : 'Submitted'
+                }));
+
+
+                const availableFaculty = allFaculty.map(f => f.name);
+
+                let maxBatchesPerAssignment = 4;
+                const savedConstraints = getFromStorage('constraints');
+                if (savedConstraints && savedConstraints.maxBatches) {
+                    maxBatchesPerAssignment = parseInt(savedConstraints.maxBatches, 10);
+                }
+
+                let allBatches = getFromStorage('studentBatches') || [];
+                let availableBatches = [...allBatches];
+                let selectedBatches = [];
+
+                function updateGlider(dashboardEl) {
+                    const activeLink = dashboardEl.querySelector('.nav-link.active');
+                    const gliderEl = dashboardEl.querySelector('.nav-glider');
+                    if (activeLink && gliderEl) {
+                        gliderEl.style.width = `${activeLink.offsetWidth}px`;
+                        gliderEl.style.left = `${activeLink.offsetLeft}px`;
+                    }
+                }
+                function renderPills() {
+                    pillsContainer.querySelectorAll('.pill').forEach(p => p.remove());
+                    selectedBatches.forEach(batch => {
+                        const pill = document.createElement('div'); pill.className = 'pill'; pill.textContent = batch;
+                        const removeBtn = document.createElement('span'); removeBtn.className = 'remove-pill'; removeBtn.textContent = '×';
+                        removeBtn.addEventListener('click', (e) => { e.stopPropagation(); removeBatch(batch); });
+                        pill.appendChild(removeBtn);
+                        pillsContainer.insertBefore(pill, batchSearch);
+                    });
+                }
+                function renderDropdown(filter = '') {
+                    batchDropdown.innerHTML = '';
+                    const canSelectMore = selectedBatches.length < maxBatchesPerAssignment;
+                    const filteredBatches = availableBatches.filter(b => b.toLowerCase().includes(filter.toLowerCase())).sort((a, b) => parseInt(a.split(' ')[1]) - parseInt(b.split(' ')[1]));
+                    if (filteredBatches.length === 0 && availableBatches.length > 0) {
+                         const option = document.createElement('div'); option.className = 'dropdown-option disabled';
+                         option.textContent = 'No matching batches'; batchDropdown.appendChild(option);
+                    }
+                    filteredBatches.forEach(batch => {
+                        const option = document.createElement('div'); option.className = 'dropdown-option'; option.textContent = batch;
+                        if (!canSelectMore) option.classList.add('disabled');
+                        else option.addEventListener('mousedown', (e) => { e.preventDefault(); selectBatch(batch); });
+                        batchDropdown.appendChild(option);
+                    });
+                    if (!canSelectMore && selectedBatches.length > 0) {
+                        const limitReachedOption = document.createElement('div');
+                        limitReachedOption.className = 'dropdown-option disabled';
+                        limitReachedOption.textContent = `Limit of ${maxBatchesPerAssignment} batches reached`;
+                        limitReachedOption.style.fontWeight = 'bold';
+                        limitReachedOption.style.textAlign = 'center';
+                        batchDropdown.insertBefore(limitReachedOption, batchDropdown.firstChild);
+                    }
+                }
+                function selectBatch(batch) {
+                    selectedBatches.push(batch); availableBatches = availableBatches.filter(b => b !== batch);
+                    batchSearch.value = ''; batchSearch.placeholder = ''; renderPills(); renderDropdown();
+                }
+                function removeBatch(batch) {
+                    selectedBatches = selectedBatches.filter(b => b !== batch);
+                    availableBatches.push(batch);
+                    if (selectedBatches.length === 0) batchSearch.placeholder = 'Click to select...';
+                    renderPills(); renderDropdown();
+                }
+                function populateFacultySelect() {
+                    facultySelect.innerHTML = '<option value="">--Select a Faculty--</option>';
+                    allFaculty.forEach(faculty => { facultySelect.innerHTML += `<option value="${faculty.id}">${faculty.name}</option>`; });
+                }
+                function populateClassesPerWeek() {
+                    classesPerWeekSelect.innerHTML = '<option value="">--Select--</option>';
+                    for (let i = 1; i <= 6; i++) { classesPerWeekSelect.innerHTML += `<option value="${i}">${i}</option>`; }
+                }
+                function onAssignmentChange(facultyId, hoursChange) {
+                    const faculty = allFaculty.find(f => f.id === facultyId);
+                    if (faculty) faculty.assignedHours += hoursChange;
+                }
+                function renderWorkloadTable() {
+                    if (!workloadTableBody) return;
+                    workloadTableBody.innerHTML = '';
+                    allFaculty.forEach(faculty => {
+                        const newRow = workloadTableBody.insertRow();
+                        newRow.innerHTML = `<td>${faculty.name}</td><td>${faculty.assignedHours}</td><td>${getWorkloadStatus(faculty.assignedHours)}</td>`;
+                    });
+                }
+                function renderPreferencesTable() {
+                    if (!preferencesTableBody) return;
+                    preferencesTableBody.innerHTML = '';
+                    allFaculty.forEach(faculty => {
+                        const statusClass = faculty.preferenceStatus === 'Submitted' ? 'submitted' : 'pending';
+                        const buttonDisabled = faculty.preferenceStatus === 'Submitted' ? 'disabled' : '';
+                        const newRow = preferencesTableBody.insertRow();
+                        newRow.innerHTML = `<td>${faculty.name}</td><td><span class="status ${statusClass}">${faculty.preferenceStatus}</span></td><td><button class="reminder-button" data-email="${faculty.name}" ${buttonDisabled}>Send Reminder</button></td>`;
+                    });
+                }
+                function resetUploadButton() { publishButton.textContent = 'Upload'; publishButton.disabled = false; }
+                
+                function loadDailySchedule() {
+                    const publishedData = getFromStorage('finalPublishedTimetable');
+                    dailyScheduleData = []; // Clear previous data
+
+                    if (publishedData && publishedData.schedule && publishedData.timeSlots) {
+                        const today = "Monday"; // Simulating the current day is Monday
+                        const scheduleForToday = publishedData.schedule[today];
+                        const timeSlots = publishedData.timeSlots;
+
+                        if (scheduleForToday && timeSlots) {
+                            timeSlots.forEach(slot => {
+                                if (scheduleForToday[slot] && scheduleForToday[slot].length > 0) {
+                                    scheduleForToday[slot].forEach(classInfo => {
+                                        dailyScheduleData.push({
+                                            time: slot,
+                                            subject: classInfo.subject,
+                                            room: classInfo.room,
+                                            faculty: classInfo.teacher
+                                        });
+                                    });
+                                }
+                            });
+                        }
+                    }
+                }
+
+                function renderDailySchedule() {
+                    dailyScheduleTableBody.innerHTML = '';
+                    if (dailyScheduleData.length === 0) {
+                        dailyScheduleTableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 20px;">Final timetable has not been published yet. This page will populate with today's schedule once available.</td></tr>`;
+                        return;
+                    }
+
+                    const availableRooms = (getFromStorage('classroomData') || []).map(r => r.name || r.classroom || r.room);
+
+                    dailyScheduleData.forEach((item, index) => {
+                        const row = dailyScheduleTableBody.insertRow();
+                        row.innerHTML = `<td>${item.time}</td><td>${item.subject}</td><td>${item.room}</td><td>${item.faculty}</td><td><button class="adjust-btn" data-index="${index}">Adjust</button></td>`;
+                    });
+                }
+
+                function updateAdjustmentOptions() {
+                    const type = adjustmentTypeSelect.value;
+                    adjustmentOptionsContainer.innerHTML = '';
+                    let optionsHTML = '';
+                    if (type) {
+                       optionsHTML = `<div class="form-group"><label for="replacement-select">Available Options</label><select id="replacement-select">`;
+                        let optionsArray = [];
+                        if (type === 'timing') optionsArray = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-13:00", "14:00-15:00", "16:00-17:00"];
+                        if (type === 'classroom') optionsArray = (getFromStorage('classroomData') || []).map(r => r.name || r.classroom || r.room).filter(Boolean);
+                        if (type === 'faculty') optionsArray = availableFaculty;
+                        optionsArray.forEach(opt => { optionsHTML += `<option value="${opt}">${opt}</option>`; });
+                        optionsHTML += `</select></div>`;
+                    }
+                    adjustmentOptionsContainer.innerHTML = optionsHTML;
+                }
+                dailyScheduleTableBody.addEventListener('click', e => {
+                    if (e.target.classList.contains('adjust-btn')) {
+                        const index = e.target.dataset.index;
+                        currentlyEditingRowIndex = parseInt(index, 10);
+                        const classData = dailyScheduleData[currentlyEditingRowIndex];
+                        adjustmentModalTitle.textContent = `Adjust: ${classData.subject}`;
+                        adjustmentTypeSelect.value = '';
+                        adjustmentOptionsContainer.innerHTML = '';
+                        adjustmentModal.classList.add('show');
+                    }
+                });
+                adjustmentTypeSelect.addEventListener('change', updateAdjustmentOptions);
+                updateScheduleBtn.addEventListener('click', () => {
+                    const type = adjustmentTypeSelect.value;
+                    const replacementSelect = document.getElementById('replacement-select');
+                    if (!type || !replacementSelect || currentlyEditingRowIndex === null || updateScheduleBtn.disabled) return;
+                    const newValue = replacementSelect.value;
+                    if (type === 'timing') dailyScheduleData[currentlyEditingRowIndex].time = newValue;
+                    if (type === 'classroom') dailyScheduleData[currentlyEditingRowIndex].room = newValue;
+                    if (type === 'faculty') dailyScheduleData[currentlyEditingRowIndex].faculty = newValue;
+                    renderDailySchedule();
+                    updateScheduleBtn.textContent = '✅ Updated';
+                    updateScheduleBtn.style.backgroundColor = 'var(--success-color)';
+                    updateScheduleBtn.disabled = true;
+                    adjustmentFeedback.style.opacity = '1';
+                    setTimeout(() => {
+                        adjustmentFeedback.style.opacity = '0'; closeAllModals();
+                        setTimeout(() => {
+                           updateScheduleBtn.textContent = 'Update Schedule';
+                           updateScheduleBtn.style.backgroundColor = '';
+                           updateScheduleBtn.disabled = false;
+                        }, 350);
+                    }, 1500);
+                });
+                pillsContainer.addEventListener('click', () => batchSearch.focus());
+                batchSearch.addEventListener('focus', () => { renderDropdown(batchSearch.value); batchDropdown.classList.add('visible'); });
+                batchSearch.addEventListener('input', () => renderDropdown(batchSearch.value));
+                document.addEventListener('click', function (e) { if (!multiSelectContainer.contains(e.target)) { batchDropdown.classList.remove('visible'); } });
+                assignButton.addEventListener('click', function () {
+                    const selectedFacultyId = facultySelect.value;
+                    const classesPerWeek = parseInt(classesPerWeekSelect.value);
+                    if (selectedBatches.length === 0 || !selectedFacultyId || !classesPerWeek) return;
+                    const selectedFaculty = allFaculty.find(f => f.id === selectedFacultyId);
+                    const newRow = assignmentsTableBody.insertRow();
+                    newRow.innerHTML = `<td data-batches="${selectedBatches.join(',')}">${selectedBatches.join(', ')}</td><td data-faculty-id="${selectedFaculty.id}">${selectedFaculty.name}</td><td data-hours="${classesPerWeek}">${classesPerWeek}</td><td><button class="remove-button">❌</button></td>`;
+                    onAssignmentChange(selectedFacultyId, classesPerWeek);
+                    availableBatches = availableBatches.filter(b => !selectedBatches.includes(b));
+                    selectedBatches = []; batchSearch.placeholder = 'Click to select...';
+                    renderPills(); renderDropdown(); resetUploadButton(); renderWorkloadTable();
+                });
+                assignmentsTableBody.addEventListener('click', function (e) {
+                    if (e.target.classList.contains('remove-button')) {
+                        const row = e.target.closest('tr');
+                        const batchesToAddBack = row.cells[0].getAttribute('data-batches').split(',');
+                        const facultyId = row.cells[1].getAttribute('data-faculty-id');
+                        const hoursToRemove = parseInt(row.cells[2].getAttribute('data-hours'));
+                        batchesToAddBack.forEach(batch => { if (!availableBatches.includes(batch)) { availableBatches.push(batch); } });
+                        availableBatches.sort((a, b) => parseInt(a.split(' ')[1]) - parseInt(b.split(' ')[1]));
+                        onAssignmentChange(facultyId, -hoursToRemove);
+                        row.remove(); renderDropdown(); resetUploadButton(); renderWorkloadTable();
+                    }
+                });
+                if (preferencesTableBody) {
+                    preferencesTableBody.addEventListener('click', function (e) {
+                        if (e.target.classList.contains('reminder-button') && !e.target.disabled) {
+                            const reminderButton = e.target; reminderButton.disabled = true;
+                            reminderButton.textContent = '✅ Sent'; reminderButton.classList.add('sent');
+                        }
+                    });
+                }
+                publishButton.addEventListener('click', () => {
+                    if (publishButton.disabled) return;
+                    const assignments = Array.from(assignmentsTableBody.rows).map(row => {
+                       return {
+                           batches: row.cells[0].dataset.batches.split(','),
+                           facultyName: row.cells[1].textContent,
+                           classesPerWeek: parseInt(row.cells[2].dataset.hours)
+                       }
+                    });
+
+                    if (assignments.length > 0) {
+                        localStorage.setItem('hodAssignments', JSON.stringify(assignments));
+                        addAuditLog('HoD', `Uploaded ${assignments.length} faculty assignments`, 'assignments_uploaded');
+                        publishButton.textContent = '✅ Uploaded';
+                        publishButton.disabled = true;
+                    }
+                });
+                navLinks.forEach(link => {
+                    link.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        navLinks.forEach(nav => nav.classList.remove('active')); this.classList.add('active');
+                        updateGlider(dashboard);
+                        const targetId = this.getAttribute('href').substring(1) + '-content';
+                        contentPages.forEach(page => { page.classList.remove('active'); if (page.id === targetId) { page.classList.add('active'); } });
+                        // ADDED: Reload schedule data when navigating to the adjustments tab
+                        if (targetId === 'hod-adjustments-content') {
+                            loadDailySchedule();
+                            renderDailySchedule();
+                        }
+                    });
+                });
+                
+                loadDailySchedule();
+                updateHeaderInfo('hod', getFromStorage('userProfile') || {});
+                populateFacultySelect(); populateClassesPerWeek(); renderWorkloadTable(); renderPreferencesTable(); renderDailySchedule();
+                renderDropdown();
+                setTimeout(() => updateGlider(dashboard), 50);
+            }
+
+            // --- DEAN DASHBOARD SCRIPT ---
+            function initializeDeanDashboard() {
+                const dashboard = document.getElementById('deanDashboard');
+                if (dashboard.dataset.initialized) return;
+                dashboard.dataset.initialized = true;
+
+                const welcomeMessage = dashboard.querySelector('#dean-welcome-message');
+                const progressTableBody = dashboard.querySelector('#progress-table tbody');
+                const resourceTableBody = dashboard.querySelector('#resource-table tbody');
+                const announcementForm = dashboard.querySelector('#announcement-form');
+                const announcementText = dashboard.querySelector('#announcement-text');
+                const announcementFeed = dashboard.querySelector('#announcement-feed');
+                const navLinks = dashboard.querySelectorAll('.nav-link');
+                const contentPages = dashboard.querySelectorAll('.content-page');
+                const approveButton = dashboard.querySelector('#dean-approve-button');
+                const rejectButton = dashboard.querySelector('#dean-reject-button');
+                const deanApprovalModal = document.getElementById('deanApprovalModal');
+                const cancelDeanApprovalBtn = document.getElementById('cancel-dean-approval-btn');
+                const confirmDeanApprovalBtn = document.getElementById('confirm-dean-approval-btn');
+                const deanApprovalFeedback = document.getElementById('dean-approval-feedback');
+                const deanTimetableTitle = dashboard.querySelector('#dean-timetable-content h2');
+                const deanTimetableBody = dashboard.querySelector('#dean-timetable-content #timetable tbody');
+                const deanTimetableActions = dashboard.querySelector('#dean-timetable-content .timetable-actions');
+
+
+                const deanName = "Dr. Rajesh Kumar (Dean, School of Engineering)";
+                const departments = [
+                    { name: "CSE", hod: "Dr. Priya Singh", status: "Completed" },
+                    { name: "Mech", hod: "Dr. Rohan Mehta", status: "Pending" },
+                    { name: "Civil", hod: "Dr. Anita Desai", status: "Completed" },
+                    { name: "ECE", hod: "Dr. Sunil Kumar", status: "Pending" }
+                ];
+                const resources = [
+                    { name: "CSE Lab 101", type: "Lab", utilization: 95 },
+                    { name: "Mech Workshop", type: "Lab", utilization: 60 },
+                    { name: "Main Auditorium", type: "Hall", utilization: 85 }
+                ];
+
+                const kpiData = {
+                    totalStudents: 1460, studentChange: 5.2,
+                    facultyCount: 78, facultyChange: 3,
+                    avgClassSize: 45, classSizeChange: -2.1,
+                    classroomUtilization: 88, utilizationChange: 4
+                };
+                
+                function updateGlider(dashboardEl) {
+                    const activeLink = dashboardEl.querySelector('.nav-link.active');
+                    const gliderEl = dashboardEl.querySelector('.nav-glider');
+                    if (activeLink && gliderEl) {
+                        gliderEl.style.width = `${activeLink.offsetWidth}px`;
+                        gliderEl.style.left = `${activeLink.offsetLeft}px`;
+                    }
+                }
+                
+                 function loadAndDisplayPublishedTimetable() {
+                    const publishedData = getFromStorage('finalPublishedTimetable');
+                    
+                    if (publishedData && publishedData.schedule) {
+                        deanTimetableTitle.textContent = 'Final Published University Timetable';
+                        deanTimetableBody.innerHTML = ''; // Clear existing hardcoded content
+                        
+                        const { schedule, timeSlots } = publishedData;
+
+                        timeSlots.forEach(slot => {
+                            const row = deanTimetableBody.insertRow();
+                            let rowHTML = `<th>${slot}</th>`;
+                            ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].forEach(day => {
+                                let cellContent = '';
+                                if (schedule[day] && schedule[day][slot]) {
+                                    cellContent = schedule[day][slot].map(c => 
+                                        `<div class="class-entry"><strong>${c.subject}</strong><span>${c.teacher}</span><span>Room: ${c.room}</span></div>`
+                                    ).join('');
+                                }
+                                rowHTML += `<td>${cellContent}</td>`;
+                            });
+                            row.innerHTML = rowHTML;
+                        });
+
+                        // Hide dean's specific approval buttons as this is the final version
+                        deanTimetableActions.style.display = 'none';
+                        deanApprovalFeedback.textContent = 'This is the final timetable published by the Dean of Academics.';
+                        deanApprovalFeedback.style.color = 'var(--success-color)';
+                        deanApprovalFeedback.style.opacity = '1';
+                    }
+                }
+                
+                dashboard.querySelector('#dean-total-students').textContent = kpiData.totalStudents.toLocaleString();
+                dashboard.querySelector('#dean-student-change').textContent = `+${kpiData.studentChange}% This semester`;
+                dashboard.querySelector('#dean-faculty-count').textContent = kpiData.facultyCount;
+                dashboard.querySelector('#dean-faculty-change').textContent = `+${kpiData.facultyChange} This year`;
+                dashboard.querySelector('#dean-avg-class-size').textContent = kpiData.avgClassSize;
+                dashboard.querySelector('#dean-class-size-change').textContent = `${kpiData.classSizeChange}% vs Last Year`;
+                dashboard.querySelector('#dean-classroom-utilization').textContent = `${kpiData.classroomUtilization}%`;
+                dashboard.querySelector('#dean-utilization-change').textContent = `+${kpiData.utilizationChange}%`;
+
+                if (welcomeMessage) { welcomeMessage.textContent = `Welcome, ${deanName}!`; }
+                if (progressTableBody) {
+                    progressTableBody.innerHTML = '';
+                    departments.forEach(dept => {
+                        const statusClass = dept.status.toLowerCase();
+                        progressTableBody.innerHTML += `<tr><td>${dept.name}</td><td>${dept.hod}</td><td><span class="status ${statusClass}">${dept.status}</span></td></tr>`;
+                    });
+                }
+                if (resourceTableBody) {
+                    resourceTableBody.innerHTML = '';
+                    resources.forEach(res => { resourceTableBody.innerHTML += `<tr><td>${res.name}</td><td>${res.type}</td><td>${res.utilization}%</td></tr>`; });
+                }
+                
+                if (announcementForm) {
+                    announcementForm.addEventListener('submit', function (e) {
+                        e.preventDefault(); const text = announcementText.value.trim();
+                        if (text) {
+                            const newPost = document.createElement('div'); newPost.className = 'announcement-post';
+                            const time = new Date().toLocaleString();
+                            newPost.innerHTML = `<p>${text}</p><div class="meta">Posted on ${time}</div>`;
+                            announcementFeed.insertBefore(newPost, announcementFeed.children[1]);
+                            announcementText.value = '';
+                        }
+                    });
+                }
+                navLinks.forEach(link => {
+                    link.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        navLinks.forEach(nav => nav.classList.remove('active'));
+                        this.classList.add('active');
+                        updateGlider(dashboard);
+                        const targetId = this.getAttribute('href').substring(1) + '-content';
+                        contentPages.forEach(page => { page.classList.remove('active'); if (page.id === targetId) { page.classList.add('active'); } });
+                        if (targetId === 'dean-timetable-content') {
+                            loadAndDisplayPublishedTimetable();
+                        }
+                    });
+                });
+
+                if (approveButton) { 
+                    approveButton.addEventListener('click', () => { 
+                        openModal(deanApprovalModal);
+                    }); 
+                }
+
+                if (cancelDeanApprovalBtn) {
+                    cancelDeanApprovalBtn.addEventListener('click', () => closeAllModals());
+                }
+
+                if (confirmDeanApprovalBtn) {
+                    confirmDeanApprovalBtn.addEventListener('click', () => {
+                        closeAllModals(); 
+                        verificationSuccessCallback = () => {
+                            verificationModal.classList.remove('show');
+                            verificationSuccessCallback = null;
+                            
+                            approveButton.textContent = '✅ Approved';
+                            approveButton.disabled = true;
+                            rejectButton.disabled = true;
+
+                            deanApprovalFeedback.textContent = 'Timetable Approved!';
+                            deanApprovalFeedback.style.color = 'var(--success-color)';
+                            deanApprovalFeedback.style.opacity = '1';
+
+                            addAuditLog('Dean', 'Approved timetable for School of Engineering', 'timetable_approved');
+
+                            setTimeout(() => {
+                                deanApprovalFeedback.style.opacity = '0';
+                            }, 3000); 
+                        };
+                        startVerificationProcess();
+                    });
+                }
+
+                if (rejectButton) { 
+                    rejectButton.addEventListener('click', () => {
+                        rejectionModal.dataset.source = 'dean';
+                        rejectionModal.classList.add('show');
+                    }); 
+                }
+                loadAndDisplayPublishedTimetable();
+                updateHeaderInfo('dean', getFromStorage('userProfile') || {});
+                setTimeout(() => updateGlider(dashboard), 50);
+            }
+
+            function initializeDoaDashboard() {
+                const dashboard = document.getElementById('doaDashboard');
+                if (dashboard.dataset.initialized) return;
+                dashboard.dataset.initialized = true;
+
+                const navLinks = dashboard.querySelectorAll('.nav-link');
+                const contentPages = dashboard.querySelectorAll('.content-page');
+                const schoolProgressTableBody = dashboard.querySelector('#school-progress-table tbody');
+                const facultyWorkloadTableBody = dashboard.querySelector('#faculty-workload-table tbody');
+                const openApprovalModalBtn = dashboard.querySelector('#doa-publish-btn');
+                const rejectBtn = dashboard.querySelector('#doa-reject-button');
+                const approvalModal = document.getElementById('approval-modal');
+                const timetableWrapper = dashboard.querySelector('#timetable-wrapper');
+                const noTimetableMsg = dashboard.querySelector('#no-timetable-message');
+                const doaTimetableVersionsContainer = dashboard.querySelector('#doa-timetable-versions');
+                let approvedTimetables = [];
+
+                const universityData = {
+                    "School of Engineering & Applied Sciences": { dean: "Dr. Rajesh Kumar", status: "Approved", departments: [
+                        { name: "Computer Science", hod: "Dr. Priya Singh", status: "Approved", faculty: [
+                            { name: "Dr. Priya Singh", workload: 12 }, { name: "Dr. Rohan Mehta", workload: 14 }, { name: "Dr. Sunil Kumar", workload: 10 }
+                        ] }, 
+                        { name: "Mechanical Engineering", hod: "Dr. Rohan Mehta", status: "Approved", faculty: [
+                             { name: "Dr. Vikram Sharma", workload: 15 }, { name: "Dr. Anita Desai", workload: 11 }
+                        ] }
+                    ] },
+                    "School of Law": { dean: "Dr. Meena Sharma", status: "Pending", departments: [
+                        { name: "BA LLB Program", hod: "Dr. Alok Verma", status: "Pending", faculty: [
+                            { name: "Dr. Alok Verma", workload: 13 }, { name: "Dr. K. Singh", workload: 16 }
+                        ]}, 
+                        { name: "BBA LLB Program", hod: "Dr. Sunita Reddy", status: "Approved", faculty: [
+                             { name: "Dr. Sunita Reddy", workload: 12 }, { name: "Dr. V. Rao", workload: 14 }
+                        ]}
+                    ] }
+                };
+
+                function updateGlider(dashboardEl) {
+                    const activeLink = dashboardEl.querySelector('.nav-link.active');
+                    const gliderEl = dashboardEl.querySelector('.nav-glider');
+                    if (activeLink && gliderEl) {
+                        gliderEl.style.width = `${activeLink.offsetWidth}px`;
+                        gliderEl.style.left = `${activeLink.offsetLeft}px`;
+                    }
+                }
+
+                function renderProgressTable() {
+                    if (!schoolProgressTableBody) return;
+                    schoolProgressTableBody.innerHTML = '';
+                    for (const schoolName in universityData) {
+                        const school = universityData[schoolName];
+                        const schoolRow = schoolProgressTableBody.insertRow();
+                        schoolRow.className = 'school-header';
+                        schoolRow.innerHTML = `<td colspan="3">${schoolName} (Dean: ${school.dean})</td>`;
+                        school.departments.forEach(dept => {
+                            const statusClass = dept.status.toLowerCase().replace(' ', '-');
+                            const deptRow = schoolProgressTableBody.insertRow();
+                            deptRow.className = 'department-row';
+                            deptRow.innerHTML = `<td>${dept.name}</td><td>${dept.hod}</td><td><span class="status ${statusClass}">${dept.status}</span></td>`;
+                        });
+                    }
+                }
+                
+                function renderFacultyWorkloadTable() {
+                    if (!facultyWorkloadTableBody) return;
+                    facultyWorkloadTableBody.innerHTML = '';
+                    for (const schoolName in universityData) {
+                        const school = universityData[schoolName];
+                        const schoolRow = facultyWorkloadTableBody.insertRow();
+                        schoolRow.className = 'school-header';
+                        schoolRow.innerHTML = `<td colspan="4">${schoolName}</td>`;
+                        school.departments.forEach(dept => {
+                             dept.faculty.forEach(fac => {
+                                 const facRow = facultyWorkloadTableBody.insertRow();
+                                 facRow.className = 'department-row';
+                                 facRow.innerHTML = `<td>${fac.name}</td><td>${dept.name}</td><td>${fac.workload}</td><td>${getWorkloadStatus(fac.workload)}</td>`;
+                             });
+                        });
+                    }
+                }
+                
+                function displayDoaTimetable(timetable, timeSlots) {
+                    const table = timetableWrapper.querySelector('table');
+                    if (!table) return;
+                    const tableHead = table.querySelector('thead');
+                    const tableBody = table.querySelector('tbody');
+                    tableHead.innerHTML = '<tr><th>Time</th><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th></tr>';
+                    tableBody.innerHTML = '';
+
+                    timeSlots.forEach(slot => {
+                        const row = tableBody.insertRow();
+                        row.innerHTML = `<th>${slot}</th>` + ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].map(day => {
+                            let cellContent = '';
+                            if (timetable && timetable[day] && timetable[day][slot]) {
+                                cellContent = timetable[day][slot].map(c => 
+                                    `<div class="class-entry" style="border-left-color: var(--primary-color); background: var(--nav-link-hover);"><strong>${c.subject}</strong><span>${c.teacher}</span><span>${c.room}</span></div>`
+                                ).join('');
+                            }
+                            return `<td>${cellContent}</td>`;
+                        }).join('');
+                    });
+                }
+                
+                function loadTimetableForApproval() {
+                    const timetableData = getFromStorage('timetableForApproval');
+                    if (timetableData && timetableData.timetables && timetableData.timetables.length > 0) {
+                        approvedTimetables = timetableData.timetables;
+                        const { timeSlots } = timetableData;
+
+                        doaTimetableVersionsContainer.innerHTML = '';
+                        approvedTimetables.forEach((_, i) => {
+                            const versionBtn = document.createElement('button');
+                            versionBtn.className = `version-btn ${i === 0 ? 'active' : ''}`;
+                            versionBtn.dataset.version = i;
+                            versionBtn.textContent = `Version ${i + 1}`;
+                            doaTimetableVersionsContainer.appendChild(versionBtn);
+                        });
+
+                        doaTimetableVersionsContainer.addEventListener('click', e => {
+                            if (e.target.classList.contains('version-btn')) {
+                                doaTimetableVersionsContainer.querySelectorAll('.version-btn').forEach(btn => btn.classList.remove('active'));
+                                e.target.classList.add('active');
+                                const versionIndex = parseInt(e.target.dataset.version);
+                                displayDoaTimetable(approvedTimetables[versionIndex], timeSlots);
+                            }
+                        });
+
+                        displayDoaTimetable(approvedTimetables[0], timeSlots);
+                        
+                        timetableWrapper.style.display = 'block';
+                        noTimetableMsg.style.display = 'none';
+                        openApprovalModalBtn.style.display = 'inline-block';
+                        rejectBtn.style.display = 'inline-block';
+
+                    } else {
+                         timetableWrapper.style.display = 'none';
+                         noTimetableMsg.style.display = 'block';
+                         doaTimetableVersionsContainer.innerHTML = '';
+                         openApprovalModalBtn.style.display = 'none';
+                         rejectBtn.style.display = 'none';
+                    }
+                }
+
+
+                navLinks.forEach(link => {
+                    link.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        navLinks.forEach(nav => nav.classList.remove('active'));
+                        this.classList.add('active');
+                        updateGlider(dashboard);
+                        const targetId = this.getAttribute('href').substring(1) + '-content';
+                        contentPages.forEach(page => { page.classList.remove('active'); if (page.id === targetId) { page.classList.add('active'); } });
+                        // Refresh timetable data when navigating to the tab
+                        if (targetId === 'doa-timetable-content') {
+                            loadTimetableForApproval();
+                        }
+                    });
+                });
+                
+                if (rejectBtn) {
+                    rejectBtn.addEventListener('click', () => {
+                        rejectionModal.dataset.source = 'doa';
+                        rejectionModal.classList.add('show');
+                    });
+                }
+
+                if (openApprovalModalBtn) {
+                    openApprovalModalBtn.addEventListener('click', () => {
+                        approvalModal.dataset.source = 'doa';
+                        openModal(approvalModal);
+                    });
+                }
+                
+                const finalApproveBtn = approvalModal.querySelector('#final-approve-btn');
+                const finalPublishBtn = approvalModal.querySelector('#final-publish-btn');
+                const cancelApprovalBtn = approvalModal.querySelector('#cancel-approval-btn');
+                const feedbackEl = approvalModal.querySelector('#approval-feedback');
+
+                if(cancelApprovalBtn) cancelApprovalBtn.addEventListener('click', ()=> closeAllModals());
+
+                if (finalApproveBtn) {
+                    finalApproveBtn.addEventListener('click', () => { 
+                        if (approvalModal.dataset.source === 'doa') {
+                           feedbackEl.textContent = '✅ Timetable has been approved internally.';
+                           feedbackEl.style.color = 'var(--success-color)';
+                           setTimeout(closeAllModals, 2000);
+                        }
+                    });
+                }
+
+                if (finalPublishBtn) {
+                    finalPublishBtn.addEventListener('click', () => {
+                        closeAllModals();
+                        verificationSuccessCallback = () => {
+                            verificationModal.classList.remove('show');
+                            verificationSuccessCallback = null;
+                            
+                            const mainPublishBtn = document.getElementById('doa-publish-btn');
+                            const mainRejectBtn = document.getElementById('doa-reject-button');
+                            if(mainPublishBtn) {
+                                mainPublishBtn.textContent = '✅ Published';
+                                mainPublishBtn.disabled = true;
+                                mainRejectBtn.disabled = true;
+
+                                const activeVersionBtn = dashboard.querySelector('.version-btn.active');
+                                const versionIndex = activeVersionBtn ? parseInt(activeVersionBtn.dataset.version, 10) : 0;
+                                const versionNumberForLog = versionIndex + 1;
+
+                                if (approvedTimetables && approvedTimetables[versionIndex]) {
+                                    const finalTimetable = approvedTimetables[versionIndex];
+                                    const timetableData = getFromStorage('timetableForApproval');
+                                    const timeSlots = timetableData ? timetableData.timeSlots : [];
+                                    
+                                    localStorage.setItem('finalPublishedTimetable', JSON.stringify({
+                                        schedule: finalTimetable,
+                                        timeSlots: timeSlots
+                                    }));
+                                }
+
+                                addAuditLog('DoA', `Approved & Published Timetable Version ${versionNumberForLog}`, 'timetable_published');
+                            }
+                        };
+                        startVerificationProcess();
+                    });
+                }
+                
+                updateHeaderInfo('doa', getFromStorage('userProfile') || {});
+                renderProgressTable();
+                renderFacultyWorkloadTable();
+                loadTimetableForApproval();
+                setTimeout(() => updateGlider(dashboard), 50);
+            }
+
+        });
+    </script>
+</body>
+</html>
