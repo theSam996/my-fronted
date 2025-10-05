@@ -1,4 +1,4 @@
-# Edify – Timetable Scheduler Frontend
+# Edify – Timetable Scheduler Frontend & Backend
 
 This project is the **frontend & Backend** for *Edify*, a timetable scheduler created for the **Higher Educational Institutions, built for Govt. for Jharkhand**. I developed this frontend with help of **Google Gemini Pro. i use google authentication for sign in and for hosting i use netlify**.
 
