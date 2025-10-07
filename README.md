@@ -22,4 +22,4 @@ Using an optimization engine such as **Google OR-Tools**, Edify will generate di
 ---
 
 *Developed by Samar Kumar*  
-Frontend & Backend Developer, Leader | Team Sankalp
+Frontend & Backend Developer, tech | Team Sankalp
